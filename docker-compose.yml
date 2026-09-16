@@ -1,0 +1,17 @@
+services:
+  theme-tikovia:
+    container_name: tikovia-theme-showcase
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4028:4028"
+    environment:
+      - NODE_ENV=production
+      - PORT=4028
+      - HOSTNAME=0.0.0.0
+    volumes:
+      # Mount thư mục dữ liệu để lưu nội dung Admin và ảnh upload không bị mất khi build lại container
+      - ./src/data:/app/src/data
+      - ./public/uploads:/app/public/uploads

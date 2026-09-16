@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.gitignore
+*.zip
+*.log
+dist_cpanel
+scripts
+.agent
+README.md

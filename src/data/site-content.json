@@ -1,0 +1,278 @@
+{
+  "hero": {
+    "eyebrow": "NHÀ THIẾT KẾ GIAO DIỆN WEB · 24+ THEMES",
+    "titleLine1": "Giao diện",
+    "titleLine2": "nói lên thiết kế.",
+    "titleLine3": "Từng pixel.",
+    "description": "Giao diện web sẵn sàng triển khai cho nhiều ngành — được xây dựng để thể hiện phạm vi thiết kế, tư duy hệ thống và sự chú ý đến từng chi tiết.",
+    "ctaPrimaryText": "Xem Tất Cả Themes",
+    "ctaPrimaryLink": "#themes",
+    "ctaSecondaryText": "Liên Hệ Thiết Kế",
+    "ctaSecondaryLink": "#contact",
+    "trustedBy": [
+      "Orbit SaaS",
+      "Velours Luxe",
+      "Launchpad",
+      "Codeforge",
+      "Atelier Studio"
+    ],
+    "bgImage": "/assets/images/hero_webdesign.jpg"
+  },
+  "themes": [
+    {
+      "id": 1,
+      "title": "BalaceHouse",
+      "category": "LandingPage",
+      "description": "Trang giới thiệu và đặt phòng spa",
+      "tag": "Sang trọng",
+      "year": "2025",
+      "image": "/uploads/1789436398495-balance-house.png",
+      "images": [
+        "/uploads/1789436398495-balance-house.png",
+        "/uploads/1789460055975-demospa1-1.png",
+        "/uploads/1789460061814-demospa1-2.png",
+        "/uploads/1789460064933-demospa1-3.png",
+        "/uploads/1789460067698-demospa1-4.png",
+        "/uploads/1789460070996-demospa1-5.png"
+      ],
+      "alt": "BalanceHouse",
+      "demoUrl": "demospa1.tikovia.vn",
+      "accentColor": "text-amber-600"
+    },
+    {
+      "id": 2,
+      "title": "Velours Luxe",
+      "category": "Thương Mại Điện Tử",
+      "description": "Giao diện thương mại điện tử thời trang cao cấp với bố cục sản phẩm biên tập và khung ảnh điện ảnh.",
+      "tag": "Sang Trọng",
+      "year": "2025",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1959699ce-1785999784754.png",
+      "alt": "Trang sản phẩm thời trang thanh lịch với nhiều khoảng trắng và typography sang trọng trên nền kem",
+      "demoUrl": "#",
+      "accentColor": "text-rose-500"
+    },
+    {
+      "id": 3,
+      "title": "Folio Minimal",
+      "category": "Portfolio",
+      "description": "Giao diện portfolio cá nhân tối giản. Bố cục đơn sắc, ưu tiên typography với chuyển trang mượt mà.",
+      "tag": "Tối Giản",
+      "year": "2026",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1b69c5d97-1772787501444.png",
+      "alt": "Bố cục portfolio tối giản với typography lớn và nhiều khoảng trắng trên nền trắng sạch",
+      "demoUrl": "#",
+      "accentColor": "text-slate-500"
+    },
+    {
+      "id": 4,
+      "title": "Voltage Agency",
+      "category": "Agency",
+      "description": "Giao diện agency sáng tạo táo bạo, năng lượng cao với phân chia chéo, chữ khổng lồ và trình bày dự án toàn màn hình.",
+      "tag": "Táo Bạo",
+      "year": "2025",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1fd7741b2-1774820431856.png",
+      "alt": "Website agency táo bạo với các phần hình học chéo, điểm nhấn neon và typography khổng lồ trên nền tối",
+      "demoUrl": "#",
+      "accentColor": "text-yellow-600"
+    },
+    {
+      "id": 5,
+      "title": "Broadsheet",
+      "category": "Blog / Biên Tập",
+      "description": "Giao diện blog biên tập lấy cảm hứng từ báo in. Bố cục nhiều cột, chữ hoa đầu đoạn và hệ thống phân cấp typography phong phú.",
+      "tag": "Biên Tập",
+      "year": "2026",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1b9394634-1772150441242.png",
+      "alt": "Bố cục blog biên tập kiểu báo với cột, typography serif và bảng màu mực trên nền trắng ấm",
+      "demoUrl": "#",
+      "accentColor": "text-amber-600"
+    },
+    {
+      "id": 6,
+      "title": "Launchpad",
+      "category": "Startup",
+      "description": "Trang landing startup tối ưu chuyển đổi với các phần tính năng động, khối bằng chứng xã hội và bảng giá phân tầng.",
+      "tag": "Landing Page",
+      "year": "2026",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1106870ed-1772372670046.png",
+      "alt": "Trang landing startup hiện đại với phần hero gradient, thẻ tính năng và bảng giá sạch trên nền sáng",
+      "demoUrl": "#",
+      "accentColor": "text-violet-500"
+    },
+    {
+      "id": 7,
+      "title": "Mise en Place",
+      "category": "Nhà Hàng",
+      "description": "Giao diện nhà hàng đầy không khí với ảnh thực phẩm toàn màn hình, tích hợp đặt bàn và bố cục thực đơn theo mùa.",
+      "tag": "Ẩm Thực",
+      "year": "2025",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_12e0f5f69-1772100450028.png",
+      "alt": "Website nhà hàng đầy không khí với ảnh thực phẩm ánh nến, tông màu tối huyền bí và typography serif thanh lịch",
+      "demoUrl": "#",
+      "accentColor": "text-orange-500"
+    },
+    {
+      "id": 8,
+      "title": "Meridian Realty",
+      "category": "Bất Động Sản",
+      "description": "Giao diện bất động sản cao cấp với bản đồ tài sản tương tác, máy tính thế chấp và hệ thống hồ sơ đại lý.",
+      "tag": "Bất Động Sản",
+      "year": "2025",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1afe8bafc-1773345555117.png",
+      "alt": "Trang danh sách bất động sản sang trọng với ảnh nội thất nhà hiện đại sáng và bố cục chi tiết tài sản sạch",
+      "demoUrl": "#",
+      "accentColor": "text-teal-500"
+    },
+    {
+      "id": 9,
+      "title": "Pulse Health",
+      "category": "Y Tế",
+      "description": "Giao diện nền tảng y tế sạch, dễ tiếp cận với đặt lịch hẹn, dashboard bệnh nhân và bố cục hồ sơ y tế.",
+      "tag": "Y Tế",
+      "year": "2026",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1644aff77-1764659451775.png",
+      "alt": "Dashboard y tế sạch với lịch hẹn, thẻ bệnh nhân và giao diện y tế màu xanh nhạt",
+      "demoUrl": "#",
+      "accentColor": "text-cyan-500"
+    },
+    {
+      "id": 10,
+      "title": "Nomad Travel",
+      "category": "Du Lịch",
+      "description": "Giao diện blog du lịch và đặt vé lấy cảm hứng từ khát vọng khám phá với ảnh điểm đến đắm chìm và công cụ lập lịch trình.",
+      "tag": "Phiêu Lưu",
+      "year": "2025",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_16b605330-1764760482111.png",
+      "alt": "Website du lịch với ảnh phong cảnh toàn màn hình, thẻ điểm đến và typography chủ đề phiêu lưu",
+      "demoUrl": "#",
+      "accentColor": "text-emerald-500"
+    },
+    {
+      "id": 11,
+      "title": "Codeforge",
+      "category": "Công Cụ Lập Trình",
+      "description": "Giao diện công cụ lập trình và tài liệu chế độ tối với tô sáng cú pháp, bố cục tham chiếu API và sân chơi code.",
+      "tag": "Dev",
+      "year": "2026",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1e62f6ba2-1772456973242.png",
+      "alt": "Trang tài liệu lập trình tối với tô sáng cú pháp code, điều hướng sidebar và giao diện kiểu terminal",
+      "demoUrl": "#",
+      "accentColor": "text-green-500"
+    },
+    {
+      "id": 12,
+      "title": "Atelier Studio",
+      "category": "Studio Sáng Tạo",
+      "description": "Portfolio studio nghệ thuật với lưới ảnh masonry, nghiên cứu trường hợp dự án và trình bày thiết kế chuyển động đoạt giải.",
+      "tag": "Sáng Tạo",
+      "year": "2026",
+      "image": "https://img.rocket.new/generatedImages/rocket_gen_img_1d5df67fe-1772716065678.png",
+      "alt": "Portfolio studio sáng tạo với lưới masonry các thumbnail dự án đầy màu sắc và typography nghệ thuật táo bạo",
+      "demoUrl": "#",
+      "accentColor": "text-pink-500"
+    }
+  ],
+  "about": {
+    "badge": "Giới Thiệu",
+    "title": "Tạo ra những trải nghiệm kỹ thuật số khiến người dùng",
+    "highlightText": "nhìn lại lần thứ hai.",
+    "paragraphs": [
+      "Tôi thiết kế các giao diện web cân bằng giữa tác động thị giác và sự rõ ràng về chức năng. Mỗi theme trong portfolio này bắt đầu từ một brief thực tế — một ngành cụ thể, một vấn đề người dùng cụ thể — và được xây dựng theo tiêu chuẩn sản xuất.",
+      "Cách tiếp cận của tôi: hiểu bối cảnh trước khi chạm vào canvas. Kết quả là những theme cảm thấy gắn liền với ngành của chúng thay vì là các template chung chung với lớp sơn mới."
+    ],
+    "skills": [
+      {
+        "name": "Thiết Kế UI/UX",
+        "level": 95
+      },
+      {
+        "name": "Bố Cục Responsive",
+        "level": 98
+      },
+      {
+        "name": "Hệ Thống Typography",
+        "level": 90
+      },
+      {
+        "name": "Chuyển Động & Hoạt Ảnh",
+        "level": 85
+      },
+      {
+        "name": "Hệ Thống Thiết Kế",
+        "level": 88
+      },
+      {
+        "name": "Lập Trình Frontend",
+        "level": 80
+      }
+    ],
+    "tools": [
+      "Figma",
+      "Next.js",
+      "Tailwind CSS",
+      "Framer Motion",
+      "GSAP",
+      "Webflow",
+      "Adobe CC"
+    ],
+    "studioImage": "https://img.rocket.new/generatedImages/rocket_gen_img_137ddd9e4-1772074857584.png",
+    "studioBadge": "Studio Thiết Kế"
+  },
+  "stats": {
+    "badge": "Con Số",
+    "stats": [
+      {
+        "value": 24,
+        "suffix": "+",
+        "label": "Themes Đã Thiết Kế",
+        "description": "Trải rộng 8 danh mục ngành"
+      },
+      {
+        "value": 100,
+        "suffix": "%",
+        "label": "Responsive",
+        "description": "Mọi theme hoạt động trên tất cả thiết bị"
+      },
+      {
+        "value": 3,
+        "suffix": "năm",
+        "label": "Kinh Nghiệm",
+        "description": "Xây dựng giao diện web chuẩn sản xuất"
+      },
+      {
+        "value": 18,
+        "suffix": "+",
+        "label": "Demo Trực Tiếp",
+        "description": "Có thể triển khai và khám phá ngay bây giờ"
+      }
+    ]
+  },
+  "contact": {
+    "badge": "Liên Hệ",
+    "title": "Hãy cùng tạo ra",
+    "highlightText": "điều gì đó tuyệt vời.",
+    "description": "Sẵn sàng cho các vị trí toàn thời gian, dự án freelance và hợp tác thiết kế. Phản hồi trong vòng 24 giờ.",
+    "email": "hello@themeshowcase.design",
+    "status": "Sẵn sàng nhận cơ hội mới"
+  },
+  "footer": {
+    "brandName": "Tikovia",
+    "tagline": "Tinh tế trong từng pixel.",
+    "logoUrl": "/assets/images/cropped-tikovia_logo.png",
+    "copyright": "© 2026 Tikovia",
+    "links": [
+      {
+        "label": "Themes",
+        "href": "#themes"
+      },
+      {
+        "label": "Giới Thiệu",
+        "href": "#about"
+      },
+      {
+        "label": "Liên Hệ",
+        "href": "#contact"
+      }
+    ]
+  }
+}
