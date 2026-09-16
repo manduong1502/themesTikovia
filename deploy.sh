@@ -44,7 +44,7 @@ fi
 # 6. Kiểm tra trạng thái container
 echo "======================================================"
 echo "📊 TRẠNG THÁI CONTAINER HIỆN TẠI:"
-docker ps --filter "name=tikovia-theme-showcase"
+docker ps --filter "name=tiko-themes-web"
 
 echo "======================================================"
 echo "✅ HOÀN TẤT TRIỂN KHAI THÀNH CÔNG!"

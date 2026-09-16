@@ -1,6 +1,6 @@
 services:
   theme-tikovia:
-    container_name: tikovia-theme-showcase
+    container_name: tiko-themes-web
     build:
       context: .
       dockerfile: Dockerfile
