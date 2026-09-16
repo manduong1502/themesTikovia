@@ -15,7 +15,7 @@ export default function ContactSection({ contact }: Props) {
   const title = contact?.title || 'Hãy cùng tạo ra';
   const highlightText = contact?.highlightText || 'điều gì đó tuyệt vời.';
   const description = contact?.description || 'Sẵn sàng cho các vị trí toàn thời gian, dự án freelance và hợp tác thiết kế. Phản hồi trong vòng 24 giờ.';
-  const email = contact?.email || 'hello@themeshowcase.design';
+  const email = contact?.email || 'contact@tikovia.vn';
   const status = contact?.status || 'Sẵn sàng nhận cơ hội mới';
 
   const handleSubmit = (e: React.FormEvent) => {

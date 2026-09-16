@@ -23,9 +23,45 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:4028'),
-  title: 'ThemeShowcase — Web Theme Design Portfolio',
-  description: 'A curated gallery of production-quality web themes built across industries and styles — designed to demonstrate range, craft, and creative vision.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://themes.tikovia.vn'),
+  title: 'Kho Giao Diện Mẫu Tikovia — Thiết Kế Website Đa Ngành Chuẩn SEO',
+  description:
+    'Bộ sưu tập mẫu giao diện website & landing page cao cấp, chuẩn SEO, tối ưu trải nghiệm người dùng cho mọi ngành nghề được thiết kế và phát triển bởi Tikovia.',
+  keywords: [
+    'giao diện website',
+    'kho theme website',
+    'thiết kế web tikovia',
+    'mẫu landing page đẹp',
+    'theme web chuẩn seo',
+    'tikovia themes',
+    'tikovia.vn',
+  ],
+  authors: [{ name: 'Tikovia', url: 'https://tikovia.vn' }],
+  creator: 'Tikovia',
+  openGraph: {
+    title: 'Kho Giao Diện Mẫu Tikovia — Thiết Kế Website Đa Ngành Chuẩn SEO',
+    description:
+      'Bộ sưu tập mẫu giao diện website & landing page cao cấp, chuẩn SEO, tối ưu trải nghiệm người dùng cho mọi ngành nghề được thiết kế và phát triển bởi Tikovia.',
+    url: 'https://themes.tikovia.vn',
+    siteName: 'Tikovia Themes',
+    locale: 'vi_VN',
+    type: 'website',
+    images: [
+      {
+        url: '/assets/images/cropped-tikovia_logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Tikovia Themes — Kho Giao Diện Website',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kho Giao Diện Mẫu Tikovia — Thiết Kế Website Đa Ngành Chuẩn SEO',
+    description:
+      'Bộ sưu tập mẫu giao diện website & landing page cao cấp, chuẩn SEO, tối ưu trải nghiệm người dùng cho mọi ngành nghề được thiết kế và phát triển bởi Tikovia.',
+    images: ['/assets/images/cropped-tikovia_logo.png'],
+  },
   icons: {
     icon: [
       { url: '/assets/images/cropped-tikovia_logo.png', type: 'image/png' },
