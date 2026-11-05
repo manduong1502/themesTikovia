@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import { ThemeItem } from '@/lib/content';
-import ImageUploader from './ImageUploader';
+import React, { useState, useRef, useMemo } from 'react';
+import { ThemeItem, ThemeType } from '@/lib/content';
 
 interface ThemeEditorProps {
   themes: ThemeItem[];
@@ -27,11 +26,22 @@ const ACCENT_COLORS = [
 export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
   const [selectedId, setSelectedId] = useState<number>(themes[0]?.id || 1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [adminTypeFilter, setAdminTypeFilter] = useState<'all' | ThemeType>('all');
   const [customImageUrl, setCustomImageUrl] = useState('');
   const [isAlbumUploading, setIsAlbumUploading] = useState(false);
   const albumFileRef = useRef<HTMLInputElement>(null);
 
   const selectedTheme = themes.find((t) => t.id === selectedId) || themes[0];
+
+  const counts = useMemo(() => {
+    let template = 0;
+    let client = 0;
+    themes.forEach((t) => {
+      if (t.type === 'client') client++;
+      else template++;
+    });
+    return { all: themes.length, template, client };
+  }, [themes]);
 
   const handleUpdateCurrent = (field: keyof ThemeItem, value: any) => {
     if (!selectedTheme) return;
@@ -44,19 +54,24 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
     onChange(updated);
   };
 
-  const handleAddNewTheme = () => {
+  const handleAddNewTheme = (defaultType: ThemeType = 'template') => {
     const nextId = themes.length > 0 ? Math.max(...themes.map((t) => t.id)) + 1 : 1;
+    const isClient = defaultType === 'client';
     const newTheme: ThemeItem = {
       id: nextId,
-      title: `Giao diện Mới #${nextId}`,
-      category: 'SaaS / Bảng Điều Khiển',
-      description: 'Mô tả chi tiết về giao diện mới chuẩn bị ra mắt, tối ưu SEO và responsive hoàn hảo.',
-      tag: 'Mới Ra Mắt',
+      title: isClient ? `Dự Án Khách Hàng #${nextId}` : `Giao Diện Mẫu #${nextId}`,
+      category: isClient ? 'Doanh Nghiệp / Dịch Vụ' : 'SaaS / Bảng Điều Khiển',
+      description: isClient
+        ? 'Dự án website thực tế được Tikovia thiết kế, lập trình và bàn giao vận hành cho đối tác.'
+        : 'Mô tả chi tiết về giao diện mẫu chuẩn bị ra mắt, tối ưu SEO và responsive hoàn hảo.',
+      tag: isClient ? 'Dự Án Thực Tế' : 'Mới Ra Mắt',
       year: new Date().getFullYear().toString(),
       image: '/assets/images/no_image.png',
-      alt: 'Hình ảnh đại diện cho theme mới',
+      alt: isClient ? 'Hình ảnh dự án khách hàng' : 'Hình ảnh đại diện cho theme mẫu',
       demoUrl: '#',
-      accentColor: 'text-amber-600',
+      accentColor: isClient ? 'text-emerald-500' : 'text-amber-600',
+      type: defaultType,
+      clientName: isClient ? '' : undefined,
     };
     const updated = [newTheme, ...themes];
     onChange(updated);
@@ -68,7 +83,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
       alert('Phải giữ lại ít nhất một giao diện.');
       return;
     }
-    if (confirm('Bạn có chắc chắn muốn xóa giao diện này không?')) {
+    if (confirm('Bạn có chắc chắn muốn xóa mục này không?')) {
       const updated = themes.filter((t) => t.id !== id);
       onChange(updated);
       if (selectedId === id) {
@@ -77,7 +92,9 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
     }
   };
 
-  const handleMove = (index: number, direction: 'up' | 'down') => {
+  const handleMove = (themeId: number, direction: 'up' | 'down') => {
+    const index = themes.findIndex((t) => t.id === themeId);
+    if (index === -1) return;
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= themes.length) return;
     const newThemes = [...themes];
@@ -164,120 +181,204 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
     }
   };
 
-  const filteredThemes = themes.filter(
-    (t) =>
-      t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredThemes = themes.filter((t) => {
+    const itemType = t.type || 'template';
+    const matchType = adminTypeFilter === 'all' || itemType === adminTypeFilter;
+    const q = searchTerm.toLowerCase();
+    const matchSearch =
+      t.title.toLowerCase().includes(q) ||
+      t.category.toLowerCase().includes(q) ||
+      (t.clientName && t.clientName.toLowerCase().includes(q));
+    return matchType && matchSearch;
+  });
+
+  const currentType: ThemeType = selectedTheme?.type === 'client' ? 'client' : 'template';
 
   return (
     <div className="space-y-6">
       {/* Top action bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 font-bold text-lg">
             🎨
           </div>
           <div>
-            <h2 className="text-base font-bold text-[#0D1B2A]">Danh sách Theme Cards (Tỉ lệ 4:3)</h2>
-            <p className="text-xs text-slate-400">
-              Tổng cộng {themes.length} card đang hiển thị trên trang chủ
+            <h2 className="text-base font-bold text-[#0D1B2A]">
+              Quản Lý Theme Mẫu & Dự Án Khách Hàng (Tỉ lệ 4:3)
+            </h2>
+            <p className="text-xs text-slate-500">
+              Tổng cộng <strong>{counts.all}</strong> mục ({' '}
+              <span className="text-amber-700 font-semibold">{counts.template} Theme Mẫu</span> ·{' '}
+              <span className="text-emerald-700 font-semibold">
+                {counts.client} Dự Án Đã Làm Cho Khách
+              </span>{' '}
+              )
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
           <input
             type="text"
-            placeholder="Tìm kiếm theme..."
+            placeholder="Tìm kiếm tên, danh mục..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-xs px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:border-amber-400 text-slate-800 w-full sm:w-48"
+            className="text-xs px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:border-amber-400 text-slate-800 flex-1 sm:w-48"
           />
           <button
             type="button"
-            onClick={handleAddNewTheme}
-            className="px-4 py-2 bg-[#0D1B2A] hover:bg-[#1b2a3a] text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
+            onClick={() => handleAddNewTheme('template')}
+            className="px-3.5 py-2 bg-[#0D1B2A] hover:bg-[#1b2a3a] text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
           >
-            <span>+</span> Thêm Theme Mới
+            <span>+</span> Thêm Theme Mẫu
+          </button>
+          <button
+            type="button"
+            onClick={() => handleAddNewTheme('client')}
+            className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
+          >
+            <span>🏆</span> + Thêm Dự Án Khách
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left column: Cards list */}
-        <div className="lg:col-span-5 space-y-3 max-h-[720px] overflow-y-auto pr-1">
-          {filteredThemes.map((theme, index) => {
-            const isSelected = selectedTheme?.id === theme.id;
-            const themeImgCount = (theme.images && theme.images.length > 0) ? theme.images.length : (theme.image ? 1 : 0);
-            return (
-              <div
-                key={theme.id}
-                onClick={() => setSelectedId(theme.id)}
-                className={`p-3 rounded-xl border transition-all duration-200 cursor-pointer flex items-center gap-3.5 ${
-                  isSelected
-                    ? 'border-amber-400 bg-amber-50/50 shadow-sm ring-1 ring-amber-300'
-                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                {/* 4:3 Thumbnail */}
-                <div className="relative w-20 aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
-                  {theme.image ? (
-                    <img
-                      src={theme.image}
-                      alt={theme.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">
-                      Chưa có
-                    </div>
-                  )}
-                  {themeImgCount > 1 && (
-                    <span className="absolute bottom-1 right-1 px-1 py-0.2 bg-black/70 text-white rounded text-[9px] font-bold">
-                      {themeImgCount} ảnh
-                    </span>
-                  )}
-                </div>
+        {/* Left column: Filter tabs + Cards list */}
+        <div className="lg:col-span-5 space-y-3">
+          {/* Admin Filter Tabs */}
+          <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-slate-200/70 rounded-xl">
+            <button
+              type="button"
+              onClick={() => setAdminTypeFilter('all')}
+              className={`py-2 px-2 rounded-lg text-xs font-bold transition-all ${
+                adminTypeFilter === 'all'
+                  ? 'bg-white text-[#0D1B2A] shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Tất Cả ({counts.all})
+            </button>
+            <button
+              type="button"
+              onClick={() => setAdminTypeFilter('template')}
+              className={`py-2 px-2 rounded-lg text-xs font-bold transition-all ${
+                adminTypeFilter === 'template'
+                  ? 'bg-white text-amber-800 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              🎨 Theme Mẫu ({counts.template})
+            </button>
+            <button
+              type="button"
+              onClick={() => setAdminTypeFilter('client')}
+              className={`py-2 px-2 rounded-lg text-xs font-bold transition-all ${
+                adminTypeFilter === 'client'
+                  ? 'bg-white text-emerald-800 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              🏆 Dự Án ({counts.client})
+            </button>
+          </div>
 
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1 mb-1">
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide truncate">
-                      {theme.category}
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
-                      {theme.year}
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-bold text-[#0D1B2A] truncate">{theme.title}</h4>
-                  <p className="text-[11px] text-slate-400 truncate mt-0.5">{theme.tag}</p>
-                </div>
-
-                {/* Order buttons */}
-                <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    type="button"
-                    disabled={index === 0}
-                    onClick={() => handleMove(index, 'up')}
-                    className="w-5 h-5 flex items-center justify-center rounded bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 text-[10px]"
-                    title="Lên trên"
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    disabled={index === themes.length - 1}
-                    onClick={() => handleMove(index, 'down')}
-                    className="w-5 h-5 flex items-center justify-center rounded bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 text-[10px]"
-                    title="Xuống dưới"
-                  >
-                    ▼
-                  </button>
-                </div>
+          {/* List */}
+          <div className="space-y-2.5 max-h-[680px] overflow-y-auto pr-1">
+            {filteredThemes.length === 0 ? (
+              <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-xs text-slate-400">
+                Chưa có mục nào trong bộ lọc này.
               </div>
-            );
-          })}
+            ) : (
+              filteredThemes.map((theme) => {
+                const isSelected = selectedTheme?.id === theme.id;
+                const isClient = theme.type === 'client';
+                const globalIndex = themes.findIndex((t) => t.id === theme.id);
+                const themeImgCount =
+                  theme.images && theme.images.length > 0
+                    ? theme.images.length
+                    : theme.image
+                    ? 1
+                    : 0;
+                return (
+                  <div
+                    key={theme.id}
+                    onClick={() => setSelectedId(theme.id)}
+                    className={`p-3 rounded-xl border transition-all duration-200 cursor-pointer flex items-center gap-3.5 ${
+                      isSelected
+                        ? isClient
+                          ? 'border-emerald-500 bg-emerald-50/50 shadow-sm ring-1 ring-emerald-300'
+                          : 'border-amber-400 bg-amber-50/50 shadow-sm ring-1 ring-amber-300'
+                        : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    {/* 4:3 Thumbnail */}
+                    <div className="relative w-20 aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
+                      {theme.image ? (
+                        <img
+                          src={theme.image}
+                          alt={theme.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">
+                          Chưa có
+                        </div>
+                      )}
+                      {themeImgCount > 1 && (
+                        <span className="absolute bottom-1 right-1 px-1 py-0.2 bg-black/70 text-white rounded text-[9px] font-bold">
+                          {themeImgCount} ảnh
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        {isClient ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            🏆 Dự Án Khách
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
+                            🎨 Theme Mẫu
+                          </span>
+                        )}
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                          {theme.year}
+                        </span>
+                      </div>
+                      <h4 className="text-xs font-bold text-[#0D1B2A] truncate">{theme.title}</h4>
+                      <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                        {theme.category} · {theme.tag}
+                      </p>
+                    </div>
+
+                    {/* Order buttons */}
+                    <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        disabled={globalIndex <= 0}
+                        onClick={() => handleMove(theme.id, 'up')}
+                        className="w-5 h-5 flex items-center justify-center rounded bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 text-[10px]"
+                        title="Lên trên"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        type="button"
+                        disabled={globalIndex >= themes.length - 1}
+                        onClick={() => handleMove(theme.id, 'down')}
+                        className="w-5 h-5 flex items-center justify-center rounded bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 text-[10px]"
+                        title="Xuống dưới"
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
 
         {/* Right column: Edit details & Image Album Uploader */}
@@ -301,12 +402,96 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                 </button>
               </div>
 
+              {/* PHÂN LOẠI: Theme Mẫu vs Dự Án Đã Làm Cho Khách */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
+                    <span>📌</span> Phân Loại Hiển Thị Trên Website
+                  </label>
+                  <span className="text-[11px] text-slate-400">
+                    Khách hàng có thể lọc theo phân loại này
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Option 1: Theme Mẫu */}
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateCurrent('type', 'template')}
+                    className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
+                      currentType === 'template'
+                        ? 'border-amber-500 bg-amber-50/70 shadow-sm ring-1 ring-amber-300'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <span className="text-xl mt-0.5">🎨</span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0D1B2A]">Theme Mẫu Có Sẵn</span>
+                        {currentType === 'template' && (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold">
+                            Đang chọn
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                        Hiển thị trong mục <strong>Kho Theme Mẫu</strong> để khách tham khảo và đặt làm theo mẫu.
+                      </p>
+                    </div>
+                  </button>
+
+                  {/* Option 2: Dự Án Đã Làm Cho Khách */}
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateCurrent('type', 'client')}
+                    className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
+                      currentType === 'client'
+                        ? 'border-emerald-500 bg-emerald-50/70 shadow-sm ring-1 ring-emerald-300'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <span className="text-xl mt-0.5">🏆</span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0D1B2A]">
+                          Dự Án Đã Làm Cho Khách
+                        </span>
+                        {currentType === 'client' && (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
+                            Đang chọn
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                        Hiển thị trong mục <strong>Dự Án Khách Hàng</strong> kèm nhãn <em>✓ Đã Bàn Giao</em> tăng uy tín.
+                      </p>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Optional Client Name when type === 'client' */}
+                {currentType === 'client' && (
+                  <div className="pt-2 animate-in fade-in duration-150">
+                    <label className="block text-xs font-semibold text-emerald-900 mb-1">
+                      🤝 Tên Khách Hàng / Thương Hiệu Đối Tác (Tùy chọn)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ví dụ: Balance House Spa, Thẩm mỹ viện Aura, Công ty BĐS..."
+                      value={selectedTheme.clientName || ''}
+                      onChange={(e) => handleUpdateCurrent('clientName', e.target.value)}
+                      className="w-full text-xs px-3 py-2 border border-emerald-300 rounded-lg bg-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 text-slate-800"
+                    />
+                  </div>
+                )}
+              </div>
+
               {/* Multi-Image Album Section with 4:3 Aspect Ratio */}
               <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
                   <div>
                     <h4 className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
-                      <span>🖼</span> Album Hình Ảnh Theme (Chuẩn Tỉ Lệ 4:3)
+                      <span>🖼</span> Album Hình Ảnh (Chuẩn Tỉ Lệ 4:3)
                     </h4>
                     <p className="text-[11px] text-slate-400 mt-0.5">
                       Đang có {currentImages.length} ảnh. Người dùng khi xem chi tiết sẽ có nút chuyển qua lại giữa các hình này.
@@ -419,7 +604,9 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                     </div>
                     <div className="text-left">
                       <p className="text-xs font-bold text-slate-700">
-                        {isAlbumUploading ? 'Đang lưu ảnh vào /uploads...' : 'Bấm vào đây để chọn tệp ảnh từ máy tính'}
+                        {isAlbumUploading
+                          ? 'Đang lưu ảnh vào /uploads...'
+                          : 'Bấm vào đây để chọn tệp ảnh từ máy tính'}
                       </p>
                       <p className="text-[11px] text-slate-400">
                         Hỗ trợ JPG, PNG, WEBP, SVG (Ảnh sẽ hiển thị chuẩn tỉ lệ 4:3)
@@ -477,7 +664,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Tiêu đề Theme
+                    {currentType === 'client' ? 'Tên Dự Án / Website' : 'Tiêu đề Theme'}
                   </label>
                   <input
                     type="text"
@@ -489,7 +676,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Danh mục (Category)
+                    Danh mục ngành nghề (Category)
                   </label>
                   <input
                     type="text"
@@ -501,7 +688,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Thẻ Tag nổi bật (e.g. Chế Độ Tối, Sang Trọng)
+                    Thẻ Tag nổi bật (e.g. Sang Trọng, Đã Bàn Giao)
                   </label>
                   <input
                     type="text"
@@ -513,7 +700,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Năm phát hành
+                    Năm thực hiện / phát hành
                   </label>
                   <input
                     type="text"
@@ -537,7 +724,9 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Liên kết Demo (URL)
+                    {currentType === 'client'
+                      ? 'Link Website Thực Tế (URL)'
+                      : 'Liên kết Demo (URL)'}
                   </label>
                   <input
                     type="text"
@@ -562,7 +751,8 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                 {/* Accent Color picker */}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    Màu điểm nhấn của thẻ Tag: <span className={selectedTheme.accentColor}>{selectedTheme.tag}</span>
+                    Màu điểm nhấn của thẻ Tag:{' '}
+                    <span className={selectedTheme.accentColor}>{selectedTheme.tag}</span>
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {ACCENT_COLORS.map((col) => (
@@ -586,7 +776,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
             </div>
           ) : (
             <div className="p-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
-              Vui lòng chọn một theme bên trái để chỉnh sửa.
+              Vui lòng chọn một mục bên trái để chỉnh sửa.
             </div>
           )}
         </div>

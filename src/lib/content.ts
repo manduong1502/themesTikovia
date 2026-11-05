@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+export type ThemeType = 'template' | 'client';
+
 export interface ThemeItem {
   id: number;
   title: string;
@@ -13,6 +15,8 @@ export interface ThemeItem {
   alt: string;
   demoUrl: string;
   accentColor: string;
+  type?: ThemeType;
+  clientName?: string;
 }
 
 export interface HeroContent {

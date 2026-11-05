@@ -4,8 +4,13 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 
-const navLinks = [
-  { label: 'Themes', href: '#themes' },
+const navLinks: {
+  label: string;
+  href: string;
+  filterType?: 'all' | 'template' | 'client';
+}[] = [
+  { label: 'Theme Mẫu', href: '#themes', filterType: 'template' },
+  { label: 'Dự Án Đã Làm', href: '#themes', filterType: 'client' },
   { label: 'Giới Thiệu', href: '#about' },
   { label: 'Thống Kê', href: '#stats' },
   { label: 'Liên Hệ', href: '#contact' },
@@ -14,7 +19,7 @@ const navLinks = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('Themes');
+  const [activeTab, setActiveTab] = useState('Theme Mẫu');
 
   const navContainerRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
@@ -54,8 +59,11 @@ export default function Header() {
   }, [activeTab, updateBubblePosition]);
 
   // Handle clicking a tab smoothly without scroll-spy fight
-  const handleTabClick = (label: string) => {
+  const handleTabClick = (label: string, filterType?: 'all' | 'template' | 'client') => {
     setActiveTab(label);
+    if (filterType && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('tikovia:filter-type', { detail: filterType }));
+    }
     isClickingRef.current = true;
     if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
     clickTimerRef.current = setTimeout(() => {
@@ -67,7 +75,7 @@ export default function Header() {
   useEffect(() => {
     const sectionIds = ['themes', 'about', 'stats', 'contact'];
     const sectionLabels: Record<string, string> = {
-      themes: 'Themes',
+      themes: 'Theme Mẫu',
       about: 'Giới Thiệu',
       stats: 'Thống Kê',
       contact: 'Liên Hệ',
@@ -86,7 +94,14 @@ export default function Header() {
               if (section) {
                 const top = section.offsetTop;
                 if (scrollPosition >= top) {
-                  setActiveTab(sectionLabels[sectionIds[i]]);
+                  const targetSection = sectionIds[i];
+                  if (targetSection === 'themes') {
+                    setActiveTab((prev) =>
+                      prev === 'Dự Án Đã Làm' ? 'Dự Án Đã Làm' : 'Theme Mẫu'
+                    );
+                  } else {
+                    setActiveTab(sectionLabels[targetSection]);
+                  }
                   break;
                 }
               }
@@ -152,7 +167,7 @@ export default function Header() {
                 key={link.label}
                 href={link.href}
                 onClick={() => {
-                  handleTabClick(link.label);
+                  handleTabClick(link.label, link.filterType);
                   closeMenu();
                 }}
                 className={`py-3.5 px-8 rounded-full text-lg font-bold tracking-wide transition-all duration-200 ${
@@ -228,7 +243,7 @@ export default function Header() {
                     else tabRefs.current.delete(link.label);
                   }}
                   href={link.href}
-                  onClick={() => handleTabClick(link.label)}
+                  onClick={() => handleTabClick(link.label, link.filterType)}
                   className={`relative z-10 px-5 py-2 rounded-full text-sm font-bold tracking-wide transition-colors duration-200 select-none ${
                     isActive
                       ? 'text-slate-950 font-extrabold'
