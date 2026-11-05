@@ -770,7 +770,14 @@ export default function ThemeGalleryClient({ themes }: Props) {
 
                 <a
                   href="#contact"
-                  onClick={() => setSelectedTheme(null)}
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && selectedTheme?.title) {
+                      window.dispatchEvent(
+                        new CustomEvent('tikovia:select-theme', { detail: selectedTheme.title })
+                      );
+                    }
+                    setSelectedTheme(null);
+                  }}
                   className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#0D1B2A] text-white font-semibold text-sm hover:bg-[#1a2e42] transition-colors shadow-sm text-center"
                 >
                   {selectedTheme.type === 'client'

@@ -67,6 +67,8 @@ export interface ContactContent {
   highlightText: string;
   description: string;
   email: string;
+  phone?: string;
+  zalo?: string;
   status: string;
 }
 

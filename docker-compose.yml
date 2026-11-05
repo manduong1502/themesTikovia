@@ -11,6 +11,8 @@ services:
       - NODE_ENV=production
       - PORT=4028
       - HOSTNAME=0.0.0.0
+      - NEXT_PUBLIC_SITE_URL=https://themes.tikovia.vn
+      - ADMIN_PASSWORD=tikovia2026
     volumes:
       # Mount thư mục dữ liệu để lưu nội dung Admin và ảnh upload không bị mất khi build lại container
       - ./src/data:/app/src/data

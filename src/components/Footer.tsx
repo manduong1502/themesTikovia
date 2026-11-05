@@ -54,12 +54,6 @@ export default function Footer({ footer }: Props) {
                 {link.label}
               </a>
             ))}
-            <a href="#" className="text-xs font-medium text-slate-500 hover:text-[#0D1B2A] transition-colors duration-150">
-              Quyền Riêng Tư
-            </a>
-            <a href="/admin" className="text-xs font-semibold text-amber-600 hover:text-amber-700 transition-colors duration-150 flex items-center gap-1">
-              ⚙ Quản Trị
-            </a>
           </div>
           <span className="text-xs text-slate-300">
             {copyright}

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { isAdminAuthenticated } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,6 +9,14 @@ const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 export async function POST(request: Request) {
   try {
+    const isAuth = await isAdminAuthenticated();
+    if (!isAuth) {
+      return NextResponse.json(
+        { success: false, error: 'Vui lòng đăng nhập quản trị để tải ảnh lên!' },
+        { status: 401 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 

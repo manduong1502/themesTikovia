@@ -19,10 +19,13 @@ cd "$SCRIPT_DIR"
 echo "📂 Thư mục làm việc: $SCRIPT_DIR"
 
 # 3. Sao lưu dữ liệu Admin & Ảnh Uploads hiện tại trên server trước khi kéo code
-echo "💾 Đang sao lưu dữ liệu Admin (site-content.json & public/uploads)..."
+echo "💾 Đang sao lưu dữ liệu Admin (site-content.json, leads.json & public/uploads)..."
 mkdir -p /tmp/tikovia-backup/uploads
 if [ -f "src/data/site-content.json" ]; then
   cp -f src/data/site-content.json /tmp/tikovia-backup/site-content.json
+fi
+if [ -f "src/data/leads.json" ]; then
+  cp -f src/data/leads.json /tmp/tikovia-backup/leads.json
 fi
 if [ -d "public/uploads" ]; then
   cp -rf public/uploads/. /tmp/tikovia-backup/uploads/ 2>/dev/null || true
@@ -36,6 +39,9 @@ echo "♻️ Đang khôi phục dữ liệu Admin & Ảnh Uploads đã lưu trê
 mkdir -p public/uploads src/data
 if [ -f "/tmp/tikovia-backup/site-content.json" ]; then
   cp -f /tmp/tikovia-backup/site-content.json src/data/site-content.json
+fi
+if [ -f "/tmp/tikovia-backup/leads.json" ]; then
+  cp -f /tmp/tikovia-backup/leads.json src/data/leads.json
 fi
 if [ -d "/tmp/tikovia-backup/uploads" ]; then
   cp -rf /tmp/tikovia-backup/uploads/. public/uploads/ 2>/dev/null || true

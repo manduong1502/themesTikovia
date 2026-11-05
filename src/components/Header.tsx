@@ -186,7 +186,7 @@ export default function Header() {
             onClick={closeMenu}
             className="mt-4 w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-400 to-amber-500 text-black text-base font-bold tracking-wider rounded-full hover:from-amber-300 hover:to-amber-400 transition-all shadow-xl"
           >
-            Thuê Tôi Ngay
+            Nhận Tư Vấn Ngay
             <ArrowUpRight className="w-5 h-5" />
           </a>
         </div>
@@ -272,7 +272,7 @@ export default function Header() {
               href="#contact"
               className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-white text-black font-bold text-sm sm:text-base tracking-wide shadow-xl hover:bg-amber-400 hover:scale-105 active:scale-95 transition-all duration-200"
             >
-              Thuê Tôi
+              Nhận Tư Vấn
             </a>
 
             {/* Mobile hamburger menu toggle */}

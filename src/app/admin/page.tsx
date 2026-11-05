@@ -1,43 +1,113 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { SiteContent } from '@/lib/content';
+import { LeadItem } from '@/lib/leads';
 import ThemeEditor from './components/ThemeEditor';
 import HeroEditor from './components/HeroEditor';
 import AboutEditor from './components/AboutEditor';
 import StatsEditor from './components/StatsEditor';
 import ContactFooterEditor from './components/ContactFooterEditor';
 import MediaManager from './components/MediaManager';
+import LeadsManager from './components/LeadsManager';
 
-type TabKey = 'themes' | 'hero' | 'about' | 'stats' | 'contact' | 'media';
+type TabKey = 'themes' | 'leads' | 'hero' | 'about' | 'stats' | 'contact' | 'media';
 
 export default function AdminPage() {
+  const [authChecked, setAuthChecked] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [loggingIn, setLoggingIn] = useState(false);
+
   const [content, setContent] = useState<SiteContent | null>(null);
+  const [leads, setLeads] = useState<LeadItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>('themes');
 
-  useEffect(() => {
-    async function fetchContent() {
-      try {
-        setLoading(true);
-        const res = await fetch('/api/content');
+  const fetchLeads = useCallback(async () => {
+    try {
+      const res = await fetch('/api/leads');
+      if (res.ok) {
         const json = await res.json();
-        if (json.success && json.data) {
-          setContent(json.data);
+        if (json.success && Array.isArray(json.leads)) {
+          setLeads(json.leads);
         }
-      } catch (err) {
-        console.error('Lỗi khi tải dữ liệu site-content:', err);
-      } finally {
+      }
+    } catch (e) {
+      console.error('Lỗi tải danh sách khách liên hệ:', e);
+    }
+  }, []);
+
+  const fetchAllData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [contentRes] = await Promise.all([fetch('/api/content'), fetchLeads()]);
+      const json = await contentRes.json();
+      if (json.success && json.data) {
+        setContent(json.data);
+      }
+    } catch (err) {
+      console.error('Lỗi khi tải dữ liệu site-content:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchLeads]);
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth');
+        const data = await res.json();
+        if (data.authenticated) {
+          setAuthenticated(true);
+          fetchAllData();
+        } else {
+          setLoading(false);
+        }
+      } catch {
         setLoading(false);
+      } finally {
+        setAuthChecked(true);
       }
     }
-    fetchContent();
-  }, []);
+    checkAuth();
+  }, [fetchAllData]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    setLoggingIn(true);
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: passwordInput }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAuthenticated(true);
+        setPasswordInput('');
+        fetchAllData();
+      } else {
+        setLoginError(data.error || 'Mật khẩu không đúng');
+      }
+    } catch {
+      setLoginError('Không thể kết nối máy chủ');
+    } finally {
+      setLoggingIn(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await fetch('/api/auth', { method: 'DELETE' });
+    setAuthenticated(false);
+  };
 
   const handleUpdate = (updatedPartial: Partial<SiteContent>) => {
     if (!content) return;
@@ -61,6 +131,11 @@ export default function AdminPage() {
       });
       const data = await res.json();
 
+      if (res.status === 401) {
+        setAuthenticated(false);
+        throw new Error('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại');
+      }
+
       if (res.ok && data.success) {
         setHasChanges(false);
         setSaveMessage({ type: 'success', text: 'Đã lưu toàn bộ nội dung vào site-content.json thành công!' });
@@ -75,7 +150,7 @@ export default function AdminPage() {
     }
   };
 
-  if (loading || !content) {
+  if (!authChecked || (authenticated && (loading || !content))) {
     return (
       <div className="min-h-screen bg-[#080c14] flex flex-col items-center justify-center text-white gap-4">
         <div className="w-12 h-12 border-3 border-amber-400 border-t-transparent rounded-full animate-spin" />
@@ -84,8 +159,81 @@ export default function AdminPage() {
     );
   }
 
+  // Login Gate
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen bg-[#080c14] flex items-center justify-center p-4 text-white">
+        <div className="w-full max-w-md bg-[#0f1724] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="relative w-12 h-12">
+              <Image
+                src="/assets/images/cropped-tikovia_logo.png"
+                alt="Tikovia"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-white">Đăng Nhập Quản Trị Tikovia</h1>
+              <p className="text-xs text-slate-400 mt-1">
+                Vui lòng nhập mật khẩu quản trị để chỉnh sửa nội dung & xem khách hàng liên hệ
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                Mật khẩu Quản trị
+              </label>
+              <input
+                type="password"
+                required
+                autoFocus
+                placeholder="Nhập mật khẩu admin..."
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                className="w-full bg-[#080c14] border border-white/15 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+              />
+            </div>
+
+            {loginError && (
+              <div className="p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-xs font-semibold text-red-300">
+                ⚠️ {loginError}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loggingIn}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold text-sm shadow-lg transition-all"
+            >
+              {loggingIn ? 'Đang kiểm tra...' : 'Đăng Nhập Quản Trị →'}
+            </button>
+          </form>
+
+          <div className="text-center pt-2 border-t border-white/10">
+            <Link href="/" className="text-xs text-slate-400 hover:text-amber-400 transition-colors">
+              ← Quay về trang chủ
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!content) return null;
+
+  const newLeadsCount = leads.filter((l) => l.status === 'new').length;
+
   const tabs: { key: TabKey; label: string; icon: string; badge?: string | number }[] = [
-    { key: 'themes', label: 'Theme Cards', icon: '🎨', badge: content.themes?.length },
+    { key: 'themes', label: 'Theme & Dự Án', icon: '🎨', badge: content.themes?.length },
+    {
+      key: 'leads',
+      label: 'Khách Liên Hệ',
+      icon: '📥',
+      badge: newLeadsCount > 0 ? `${newLeadsCount} mới` : leads.length,
+    },
     { key: 'hero', label: 'Hero Banner', icon: '⚡' },
     { key: 'about', label: 'Giới Thiệu & Kỹ Năng', icon: '👤' },
     { key: 'stats', label: 'Thống Kê', icon: '📊', badge: content.stats?.stats?.length },
@@ -113,7 +261,7 @@ export default function AdminPage() {
                   Tikovia Admin
                 </span>
                 <span className="block text-[10px] text-amber-400/80 font-medium">
-                  Quản lý nội dung & hình ảnh (JSON)
+                  Quản lý nội dung, dự án & khách hàng
                 </span>
               </div>
             </Link>
@@ -132,7 +280,7 @@ export default function AdminPage() {
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <Link
               href="/"
               target="_blank"
@@ -146,7 +294,7 @@ export default function AdminPage() {
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 ${
                 hasChanges
                   ? 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 scale-105 shadow-amber-500/20'
                   : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
@@ -163,6 +311,15 @@ export default function AdminPage() {
                   <span>Lưu Thay Đổi</span>
                 </>
               )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Đăng xuất khỏi Admin"
+              className="px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-red-300 hover:bg-white/5 border border-white/10 transition-colors"
+            >
+              Đăng xuất
             </button>
           </div>
         </div>
@@ -187,7 +344,9 @@ export default function AdminPage() {
                   {tab.badge !== undefined && (
                     <span
                       className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                        isActive
+                        tab.key === 'leads' && newLeadsCount > 0
+                          ? 'bg-emerald-400 text-slate-950'
+                          : isActive
                           ? 'bg-amber-400 text-slate-950'
                           : 'bg-white/10 text-slate-300'
                       }`}
@@ -225,6 +384,10 @@ export default function AdminPage() {
             themes={content.themes || []}
             onChange={(updatedThemes) => handleUpdate({ themes: updatedThemes })}
           />
+        )}
+
+        {activeTab === 'leads' && (
+          <LeadsManager leads={leads} onRefresh={fetchLeads} />
         )}
 
         {activeTab === 'hero' && (

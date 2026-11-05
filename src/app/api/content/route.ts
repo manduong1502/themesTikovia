@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSiteContent, saveSiteContent, SiteContent } from '@/lib/content';
+import { isAdminAuthenticated } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const isAuth = await isAdminAuthenticated();
+    if (!isAuth) {
+      return NextResponse.json(
+        { success: false, error: 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!' },
+        { status: 401 }
+      );
+    }
+
     const body: SiteContent = await request.json();
     if (!body || !body.themes || !body.hero) {
       return NextResponse.json(
