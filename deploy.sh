@@ -18,19 +18,27 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 echo "📂 Thư mục làm việc: $SCRIPT_DIR"
 
-# 3. Sao lưu dữ liệu Admin hiện tại & Kéo code mới nhất từ GitHub
+# 3. Sao lưu dữ liệu Admin & Ảnh Uploads hiện tại trên server trước khi kéo code
+echo "💾 Đang sao lưu dữ liệu Admin (site-content.json & public/uploads)..."
+mkdir -p /tmp/tikovia-backup/uploads
 if [ -f "src/data/site-content.json" ]; then
-  echo "💾 Đang sao lưu dữ liệu Admin (site-content.json)..."
-  cp src/data/site-content.json /tmp/tikovia-site-content.backup.json
+  cp -f src/data/site-content.json /tmp/tikovia-backup/site-content.json
+fi
+if [ -d "public/uploads" ]; then
+  cp -rf public/uploads/. /tmp/tikovia-backup/uploads/ 2>/dev/null || true
 fi
 
 echo "📥 Đang kéo code mới từ Git..."
 git fetch --all
 git reset --hard origin/main || git pull origin main
 
-if [ -f "/tmp/tikovia-site-content.backup.json" ]; then
-  echo "♻️ Đang khôi phục dữ liệu Admin đã lưu trên server..."
-  cp /tmp/tikovia-site-content.backup.json src/data/site-content.json
+echo "♻️ Đang khôi phục dữ liệu Admin & Ảnh Uploads đã lưu trên server..."
+mkdir -p public/uploads src/data
+if [ -f "/tmp/tikovia-backup/site-content.json" ]; then
+  cp -f /tmp/tikovia-backup/site-content.json src/data/site-content.json
+fi
+if [ -d "/tmp/tikovia-backup/uploads" ]; then
+  cp -rf /tmp/tikovia-backup/uploads/. public/uploads/ 2>/dev/null || true
 fi
 
 # 4. Đảm bảo các thư mục lưu dữ liệu tồn tại và có quyền ghi
