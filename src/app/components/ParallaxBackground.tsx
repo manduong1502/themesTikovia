@@ -15,7 +15,7 @@ export default function ParallaxBackground() {
         requestAnimationFrame(() => {
           const scrolled = window.scrollY;
           if (el) {
-            el.style.transform = `translateY(${scrolled * 0.25}px)`;
+            el.style.transform = `translate3d(0, ${scrolled * 0.2}px, 0)`;
           }
           ticking = false;
         });

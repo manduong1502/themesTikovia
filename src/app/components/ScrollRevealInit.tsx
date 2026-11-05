@@ -9,21 +9,27 @@ export default function ScrollRevealInit() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('active');
+            observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -20px 0px' }
+      { threshold: 0.08, rootMargin: '0px 0px -20px 0px' }
     );
 
+    let rafId: number | null = null;
     const observeElements = () => {
-      document.querySelectorAll('.reveal:not(.active)')?.forEach((el) => {
-        observer?.observe(el);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        document.querySelectorAll('.reveal:not(.active)').forEach((el) => {
+          observer.observe(el);
+        });
+        rafId = null;
       });
     };
 
     observeElements();
 
-    // Watch for dynamically added DOM elements with .reveal
+    // Watch for dynamically added DOM elements with .reveal (throttled via rAF)
     const mutationObserver = new MutationObserver(() => {
       observeElements();
     });
@@ -33,8 +39,9 @@ export default function ScrollRevealInit() {
     }
 
     return () => {
-      observer?.disconnect();
-      mutationObserver?.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+      observer.disconnect();
+      mutationObserver.disconnect();
     };
   }, []);
 
