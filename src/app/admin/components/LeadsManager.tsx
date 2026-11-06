@@ -190,3 +190,4 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
     </div>
   );
 }
+

@@ -35,12 +35,14 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
 
   const counts = useMemo(() => {
     let template = 0;
+    let miniapp = 0;
     let client = 0;
     themes.forEach((t) => {
       if (t.type === 'client') client++;
+      else if (t.type === 'miniapp') miniapp++;
       else template++;
     });
-    return { all: themes.length, template, client };
+    return { all: themes.length, template, miniapp, client };
   }, [themes]);
 
   const handleUpdateCurrent = (field: keyof ThemeItem, value: any) => {
@@ -57,19 +59,38 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
   const handleAddNewTheme = (defaultType: ThemeType = 'template') => {
     const nextId = themes.length > 0 ? Math.max(...themes.map((t) => t.id)) + 1 : 1;
     const isClient = defaultType === 'client';
+    const isMiniApp = defaultType === 'miniapp';
     const newTheme: ThemeItem = {
       id: nextId,
-      title: isClient ? `Dự Án Khách Hàng #${nextId}` : `Giao Diện Mẫu #${nextId}`,
-      category: isClient ? 'Doanh Nghiệp / Dịch Vụ' : 'SaaS / Bảng Điều Khiển',
+      title: isClient
+        ? `Dự Án Khách Hàng #${nextId}`
+        : isMiniApp
+        ? `Zalo Mini App #${nextId}`
+        : `Giao Diện Mẫu #${nextId}`,
+      category: isClient
+        ? 'Doanh Nghiệp / Dịch Vụ'
+        : isMiniApp
+        ? 'Spa / Đặt Lịch'
+        : 'SaaS / Bảng Điều Khiển',
       description: isClient
         ? 'Dự án website thực tế được Tikovia thiết kế, lập trình và bàn giao vận hành cho đối tác.'
+        : isMiniApp
+        ? 'Giải pháp Zalo Mini App giúp đặt lịch hẹn, tích điểm thành viên, mua hàng và gửi tin nhắn ZNS tự động trên Zalo.'
         : 'Mô tả chi tiết về giao diện mẫu chuẩn bị ra mắt, tối ưu SEO và responsive hoàn hảo.',
-      tag: isClient ? 'Dự Án Thực Tế' : 'Mới Ra Mắt',
+      tag: isClient ? 'Dự Án Thực Tế' : isMiniApp ? 'Zalo Mini App' : 'Mới Ra Mắt',
       year: new Date().getFullYear().toString(),
       image: '/assets/images/no_image.png',
-      alt: isClient ? 'Hình ảnh dự án khách hàng' : 'Hình ảnh đại diện cho theme mẫu',
+      alt: isClient
+        ? 'Hình ảnh dự án khách hàng'
+        : isMiniApp
+        ? 'Hình ảnh giao diện Zalo Mini App'
+        : 'Hình ảnh đại diện cho theme mẫu',
       demoUrl: '#',
-      accentColor: isClient ? 'text-emerald-500' : 'text-amber-600',
+      accentColor: isClient
+        ? 'text-emerald-500'
+        : isMiniApp
+        ? 'text-blue-500'
+        : 'text-amber-600',
       type: defaultType,
       clientName: isClient ? '' : undefined,
     };
@@ -192,7 +213,12 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
     return matchType && matchSearch;
   });
 
-  const currentType: ThemeType = selectedTheme?.type === 'client' ? 'client' : 'template';
+  const currentType: ThemeType =
+    selectedTheme?.type === 'client'
+      ? 'client'
+      : selectedTheme?.type === 'miniapp'
+      ? 'miniapp'
+      : 'template';
 
   return (
     <div className="space-y-6">
@@ -204,40 +230,48 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
           </div>
           <div>
             <h2 className="text-base font-bold text-[#0D1B2A]">
-              Quản Lý Theme Mẫu & Dự Án Khách Hàng (Tỉ lệ 4:3)
+              Quản Lý Theme Mẫu, Mini App & Dự Án Khách Hàng
             </h2>
             <p className="text-xs text-slate-500">
               Tổng cộng <strong>{counts.all}</strong> mục ({' '}
               <span className="text-amber-700 font-semibold">{counts.template} Theme Mẫu</span> ·{' '}
+              <span className="text-blue-700 font-semibold">{counts.miniapp} Mini App</span> ·{' '}
               <span className="text-emerald-700 font-semibold">
-                {counts.client} Dự Án Đã Làm Cho Khách
+                {counts.client} Dự Án Khách
               </span>{' '}
               )
             </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
           <input
             type="text"
             placeholder="Tìm kiếm tên, danh mục..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-xs px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:border-amber-400 text-slate-800 flex-1 sm:w-48"
+            className="text-xs px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:border-amber-400 text-slate-800 flex-1 sm:w-44"
           />
           <button
             type="button"
             onClick={() => handleAddNewTheme('template')}
-            className="px-3.5 py-2 bg-[#0D1B2A] hover:bg-[#1b2a3a] text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
+            className="px-3 py-2 bg-[#0D1B2A] hover:bg-[#1b2a3a] text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1"
           >
-            <span>+</span> Thêm Theme Mẫu
+            <span>🎨</span> + Theme Mẫu
+          </button>
+          <button
+            type="button"
+            onClick={() => handleAddNewTheme('miniapp')}
+            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1"
+          >
+            <span>📱</span> + Mini App
           </button>
           <button
             type="button"
             onClick={() => handleAddNewTheme('client')}
-            className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
+            className="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1"
           >
-            <span>🏆</span> + Thêm Dự Án Khách
+            <span>🏆</span> + Dự Án Khách
           </button>
         </div>
       </div>
@@ -246,11 +280,11 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
         {/* Left column: Filter tabs + Cards list */}
         <div className="lg:col-span-5 space-y-3">
           {/* Admin Filter Tabs */}
-          <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-slate-200/70 rounded-xl">
+          <div className="grid grid-cols-4 gap-1 p-1.5 bg-slate-200/70 rounded-xl">
             <button
               type="button"
               onClick={() => setAdminTypeFilter('all')}
-              className={`py-2 px-2 rounded-lg text-xs font-bold transition-all ${
+              className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all ${
                 adminTypeFilter === 'all'
                   ? 'bg-white text-[#0D1B2A] shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -261,18 +295,29 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
             <button
               type="button"
               onClick={() => setAdminTypeFilter('template')}
-              className={`py-2 px-2 rounded-lg text-xs font-bold transition-all ${
+              className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all ${
                 adminTypeFilter === 'template'
                   ? 'bg-white text-amber-800 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              🎨 Theme Mẫu ({counts.template})
+              🎨 Theme ({counts.template})
+            </button>
+            <button
+              type="button"
+              onClick={() => setAdminTypeFilter('miniapp')}
+              className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                adminTypeFilter === 'miniapp'
+                  ? 'bg-white text-blue-800 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              📱 Mini App ({counts.miniapp})
             </button>
             <button
               type="button"
               onClick={() => setAdminTypeFilter('client')}
-              className={`py-2 px-2 rounded-lg text-xs font-bold transition-all ${
+              className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all ${
                 adminTypeFilter === 'client'
                   ? 'bg-white text-emerald-800 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -292,6 +337,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
               filteredThemes.map((theme) => {
                 const isSelected = selectedTheme?.id === theme.id;
                 const isClient = theme.type === 'client';
+                const isMiniApp = theme.type === 'miniapp';
                 const globalIndex = themes.findIndex((t) => t.id === theme.id);
                 const themeImgCount =
                   theme.images && theme.images.length > 0
@@ -307,6 +353,8 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                       isSelected
                         ? isClient
                           ? 'border-emerald-500 bg-emerald-50/50 shadow-sm ring-1 ring-emerald-300'
+                          : isMiniApp
+                          ? 'border-blue-500 bg-blue-50/50 shadow-sm ring-1 ring-blue-300'
                           : 'border-amber-400 bg-amber-50/50 shadow-sm ring-1 ring-amber-300'
                         : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                     }`}
@@ -337,6 +385,10 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                         {isClient ? (
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
                             🏆 Dự Án Khách
+                          </span>
+                        ) : isMiniApp ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
+                            📱 Zalo Mini App
                           </span>
                         ) : (
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
@@ -413,59 +465,80 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   {/* Option 1: Theme Mẫu */}
                   <button
                     type="button"
                     onClick={() => handleUpdateCurrent('type', 'template')}
-                    className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
+                    className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col justify-between gap-2 ${
                       currentType === 'template'
                         ? 'border-amber-500 bg-amber-50/70 shadow-sm ring-1 ring-amber-300'
                         : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
-                    <span className="text-xl mt-0.5">🎨</span>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#0D1B2A]">Theme Mẫu Có Sẵn</span>
-                        {currentType === 'template' && (
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold">
-                            Đang chọn
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                        Hiển thị trong mục <strong>Kho Theme Mẫu</strong> để khách tham khảo và đặt làm theo mẫu.
-                      </p>
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
+                        <span>🎨</span> Theme Mẫu
+                      </span>
+                      {currentType === 'template' && (
+                        <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[9px] font-bold">
+                          Đang chọn
+                        </span>
+                      )}
                     </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      Hiển thị trong <strong>Kho Theme Mẫu</strong> để khách chọn mẫu web dựng sẵn.
+                    </p>
                   </button>
 
-                  {/* Option 2: Dự Án Đã Làm Cho Khách */}
+                  {/* Option 2: Zalo Mini App */}
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateCurrent('type', 'miniapp')}
+                    className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col justify-between gap-2 ${
+                      currentType === 'miniapp'
+                        ? 'border-blue-500 bg-blue-50/70 shadow-sm ring-1 ring-blue-300'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
+                        <span>📱</span> Zalo Mini App
+                      </span>
+                      {currentType === 'miniapp' && (
+                        <span className="px-1.5 py-0.5 rounded-full bg-blue-600 text-white text-[9px] font-bold">
+                          Đang chọn
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      Hiển thị trong tab <strong>Zalo Mini App</strong> (đặt lịch, tích điểm, bán hàng).
+                    </p>
+                  </button>
+
+                  {/* Option 3: Dự Án Đã Làm Cho Khách */}
                   <button
                     type="button"
                     onClick={() => handleUpdateCurrent('type', 'client')}
-                    className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
+                    className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col justify-between gap-2 ${
                       currentType === 'client'
                         ? 'border-emerald-500 bg-emerald-50/70 shadow-sm ring-1 ring-emerald-300'
                         : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
-                    <span className="text-xl mt-0.5">🏆</span>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#0D1B2A]">
-                          Dự Án Đã Làm Cho Khách
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
+                        <span>🏆</span> Dự Án Đã Làm
+                      </span>
+                      {currentType === 'client' && (
+                        <span className="px-1.5 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-bold">
+                          Đang chọn
                         </span>
-                        {currentType === 'client' && (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
-                            Đang chọn
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                        Hiển thị trong mục <strong>Dự Án Khách Hàng</strong> kèm nhãn <em>✓ Đã Bàn Giao</em> tăng uy tín.
-                      </p>
+                      )}
                     </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      Hiển thị trong <strong>Dự Án Khách Hàng</strong> kèm nhãn <em>✓ Đã Bàn Giao</em>.
+                    </p>
                   </button>
                 </div>
 

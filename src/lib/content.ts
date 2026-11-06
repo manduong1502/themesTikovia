@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-export type ThemeType = 'template' | 'client';
+export type ThemeType = 'template' | 'miniapp' | 'client';
 
 export interface ThemeItem {
   id: number;

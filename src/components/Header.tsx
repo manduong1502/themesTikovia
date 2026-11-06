@@ -7,9 +7,10 @@ import { ArrowUpRight, Menu, X } from 'lucide-react';
 const navLinks: {
   label: string;
   href: string;
-  filterType?: 'all' | 'template' | 'client';
+  filterType?: 'all' | 'template' | 'miniapp' | 'client';
 }[] = [
   { label: 'Theme Mẫu', href: '#themes', filterType: 'template' },
+  { label: 'Mini App', href: '#themes', filterType: 'miniapp' },
   { label: 'Dự Án Đã Làm', href: '#themes', filterType: 'client' },
   { label: 'Giới Thiệu', href: '#about' },
   { label: 'Thống Kê', href: '#stats' },
@@ -59,7 +60,7 @@ export default function Header() {
   }, [activeTab, updateBubblePosition]);
 
   // Handle clicking a tab smoothly without scroll-spy fight
-  const handleTabClick = (label: string, filterType?: 'all' | 'template' | 'client') => {
+  const handleTabClick = (label: string, filterType?: 'all' | 'template' | 'miniapp' | 'client') => {
     setActiveTab(label);
     if (filterType && typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('tikovia:filter-type', { detail: filterType }));
@@ -97,7 +98,7 @@ export default function Header() {
                   const targetSection = sectionIds[i];
                   if (targetSection === 'themes') {
                     setActiveTab((prev) =>
-                      prev === 'Dự Án Đã Làm' ? 'Dự Án Đã Làm' : 'Theme Mẫu'
+                      prev === 'Dự Án Đã Làm' || prev === 'Mini App' ? prev : 'Theme Mẫu'
                     );
                   } else {
                     setActiveTab(sectionLabels[targetSection]);

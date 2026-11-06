@@ -24,7 +24,7 @@ interface Props {
   themes: Theme[];
 }
 
-type FilterType = 'all' | 'template' | 'client';
+type FilterType = 'all' | 'template' | 'miniapp' | 'client';
 
 export default function ThemeGalleryClient({ themes }: Props) {
   const [activeType, setActiveType] = useState<FilterType>('all');
@@ -33,7 +33,7 @@ export default function ThemeGalleryClient({ themes }: Props) {
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
-  // Refs for sliding indicator on the 3 main tabs
+  // Refs for sliding indicator on the 4 main tabs
   const mainTabRefs = useRef<Map<FilterType, HTMLButtonElement>>(new Map());
   const [tabIndicator, setTabIndicator] = useState<{
     left: number;
@@ -82,6 +82,9 @@ export default function ThemeGalleryClient({ themes }: Props) {
       if (hash === '#du-an-khach') {
         setActiveType('client');
         setActiveCategory('Tất Cả');
+      } else if (hash === '#mini-app') {
+        setActiveType('miniapp');
+        setActiveCategory('Tất Cả');
       } else if (hash === '#theme-mau') {
         setActiveType('template');
         setActiveCategory('Tất Cả');
@@ -100,10 +103,13 @@ export default function ThemeGalleryClient({ themes }: Props) {
   // Counts for each type
   const counts = useMemo(() => {
     let template = 0;
+    let miniapp = 0;
     let client = 0;
     themes.forEach((t) => {
       if (t.type === 'client') {
         client++;
+      } else if (t.type === 'miniapp') {
+        miniapp++;
       } else {
         template++;
       }
@@ -111,6 +117,7 @@ export default function ThemeGalleryClient({ themes }: Props) {
     return {
       all: themes.length,
       template,
+      miniapp,
       client,
     };
   }, [themes]);
@@ -188,6 +195,23 @@ export default function ThemeGalleryClient({ themes }: Props) {
         bannerCtaClass: 'text-emerald-700 hover:text-emerald-950',
       };
     }
+    if (activeType === 'miniapp') {
+      return {
+        badge: 'Zalo Mini App & Ứng Dụng Tiện Ích',
+        badgeStyle: 'bg-blue-50 text-blue-700 border-blue-200',
+        title: 'Kho Mẫu Zalo Mini App',
+        subtitle:
+          'Giải pháp đặt lịch, bán hàng, tích điểm thành viên & CSKH tự động ngay trên Zalo mà không cần tải thêm ứng dụng.',
+        bannerBg: 'bg-blue-50/90 border-blue-200/80 text-blue-900',
+        bannerIconBg: 'bg-blue-600 text-white',
+        bannerIcon: '📱',
+        bannerStrong: 'Tiếp cận 75+ triệu người dùng Zalo:',
+        bannerText:
+          'Khách hàng mở Mini App chỉ với 1 chạm hoặc quét QR — tích hợp sẵn thông báo ZNS, giỏ hàng và quản trị tập trung.',
+        bannerCta: 'Nhận tư vấn Mini App →',
+        bannerCtaClass: 'text-blue-700 hover:text-blue-950',
+      };
+    }
     if (activeType === 'template') {
       return {
         badge: 'Kho Giao Diện Dựng Sẵn',
@@ -208,18 +232,24 @@ export default function ThemeGalleryClient({ themes }: Props) {
     return {
       badge: 'Bộ Sưu Tập & Hồ Sơ Năng Lực',
       badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200',
-      title: 'Theme Mẫu & Dự Án Khách Hàng',
+      title: 'Theme Mẫu, Mini App & Dự Án',
       subtitle:
-        'Khám phá kho giao diện mẫu dựng sẵn hoặc xem trực tiếp các dự án thực tế chúng tôi đã triển khai cho khách hàng.',
+        'Khám phá kho giao diện web dựng sẵn, giải pháp Zalo Mini App và các dự án thực tế đã triển khai cho khách hàng.',
       bannerBg: 'bg-slate-100/90 border-slate-200/80 text-slate-700',
       bannerIconBg: 'bg-[#0D1B2A] text-amber-400',
       bannerIcon: '✨',
-      bannerStrong: 'Trải nghiệm toàn diện:',
+      bannerStrong: 'Giải pháp số toàn diện:',
       bannerText:
-        'Bạn có thể chọn nhanh từ Kho Theme Mẫu dựng sẵn hoặc tham khảo các Dự Án Thực Tế đã bàn giao cho khách hàng.',
+        'Chọn nhanh từ Kho Theme Mẫu Web, trải nghiệm Zalo Mini App hoặc tham khảo các Dự Án Thực Tế đã bàn giao.',
       bannerCta: 'Nhận tư vấn miễn phí →',
       bannerCtaClass: 'text-[#0D1B2A] hover:text-amber-700',
     };
+  }, [activeType]);
+
+  const indicatorBgClass = useMemo(() => {
+    if (activeType === 'client') return 'bg-emerald-950 ring-1 ring-emerald-400/50';
+    if (activeType === 'miniapp') return 'bg-blue-950 ring-1 ring-blue-400/50';
+    return 'bg-[#0D1B2A] ring-1 ring-amber-400/40';
   }, [activeType]);
 
   return (
@@ -244,17 +274,13 @@ export default function ThemeGalleryClient({ themes }: Props) {
         </p>
       </div>
 
-      {/* Main Segmented Switcher with GPU Sliding Pill Indicator */}
+      {/* Main Segmented Switcher (4 Tabs) with GPU Sliding Pill Indicator */}
       <div className="mb-8">
-        <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-2.5 p-2 rounded-2xl bg-slate-100/90 border border-slate-200/80">
+        <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 p-2 rounded-2xl bg-slate-100/90 border border-slate-200/80">
           {/* Sliding Active Background Pill */}
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute top-0 left-0 rounded-xl shadow-md transition-[transform,width,height,background-color,opacity] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
-              activeType === 'client'
-                ? 'bg-emerald-950 ring-1 ring-emerald-400/50'
-                : 'bg-[#0D1B2A] ring-1 ring-amber-400/40'
-            }`}
+            className={`pointer-events-none absolute top-0 left-0 rounded-xl shadow-md transition-[transform,width,height,background-color,opacity] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${indicatorBgClass}`}
             style={{
               transform: `translate3d(${tabIndicator.left}px, ${tabIndicator.top}px, 0)`,
               width: `${tabIndicator.width}px`,
@@ -270,25 +296,27 @@ export default function ThemeGalleryClient({ themes }: Props) {
             }}
             type="button"
             onClick={() => setActiveType('all')}
-            className={`relative z-10 flex items-center justify-between px-4 py-3.5 rounded-xl text-left transition-colors duration-300 ${
+            className={`relative z-10 flex items-center justify-between px-3.5 py-3.5 rounded-xl text-left transition-colors duration-300 ${
               activeType === 'all' ? 'text-white' : 'text-slate-700 hover:text-[#0D1B2A]'
             }`}
           >
-            <div className="flex items-center gap-3">
-              <span className="text-lg">✨</span>
-              <div>
-                <div className="text-xs sm:text-sm font-bold leading-tight">Tất Cả Hiển Thị</div>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-base flex-shrink-0">✨</span>
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm font-bold leading-tight truncate">
+                  Tất Cả Hiển Thị
+                </div>
                 <div
-                  className={`text-[11px] mt-0.5 transition-colors duration-300 ${
+                  className={`text-[11px] mt-0.5 truncate transition-colors duration-300 ${
                     activeType === 'all' ? 'text-slate-300' : 'text-slate-400'
                   }`}
                 >
-                  Theme mẫu & dự án thực tế
+                  Web, Mini App & Dự án
                 </div>
               </div>
             </div>
             <span
-              className={`px-2.5 py-1 rounded-full text-xs font-extrabold transition-colors duration-300 ${
+              className={`ml-2 px-2 py-0.5 rounded-full text-xs font-extrabold flex-shrink-0 transition-colors duration-300 ${
                 activeType === 'all'
                   ? 'bg-amber-400 text-slate-950'
                   : 'bg-slate-200/80 text-slate-600'
@@ -305,16 +333,18 @@ export default function ThemeGalleryClient({ themes }: Props) {
             }}
             type="button"
             onClick={() => setActiveType('template')}
-            className={`relative z-10 flex items-center justify-between px-4 py-3.5 rounded-xl text-left transition-colors duration-300 ${
+            className={`relative z-10 flex items-center justify-between px-3.5 py-3.5 rounded-xl text-left transition-colors duration-300 ${
               activeType === 'template' ? 'text-white' : 'text-slate-700 hover:text-[#0D1B2A]'
             }`}
           >
-            <div className="flex items-center gap-3">
-              <span className="text-lg">🎨</span>
-              <div>
-                <div className="text-xs sm:text-sm font-bold leading-tight">Theme Mẫu Có Sẵn</div>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-base flex-shrink-0">🎨</span>
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm font-bold leading-tight truncate">
+                  Theme Mẫu Có Sẵn
+                </div>
                 <div
-                  className={`text-[11px] mt-0.5 transition-colors duration-300 ${
+                  className={`text-[11px] mt-0.5 truncate transition-colors duration-300 ${
                     activeType === 'template' ? 'text-amber-300' : 'text-slate-400'
                   }`}
                 >
@@ -323,7 +353,7 @@ export default function ThemeGalleryClient({ themes }: Props) {
               </div>
             </div>
             <span
-              className={`px-2.5 py-1 rounded-full text-xs font-extrabold transition-colors duration-300 ${
+              className={`ml-2 px-2 py-0.5 rounded-full text-xs font-extrabold flex-shrink-0 transition-colors duration-300 ${
                 activeType === 'template'
                   ? 'bg-amber-400 text-slate-950'
                   : 'bg-amber-100 text-amber-800'
@@ -333,25 +363,62 @@ export default function ThemeGalleryClient({ themes }: Props) {
             </span>
           </button>
 
-          {/* Tab 3: Dự Án Đã Làm Cho Khách */}
+          {/* Tab 3: Mini App */}
+          <button
+            ref={(el) => {
+              if (el) mainTabRefs.current.set('miniapp', el);
+            }}
+            type="button"
+            onClick={() => setActiveType('miniapp')}
+            className={`relative z-10 flex items-center justify-between px-3.5 py-3.5 rounded-xl text-left transition-colors duration-300 ${
+              activeType === 'miniapp' ? 'text-white' : 'text-slate-700 hover:text-[#0D1B2A]'
+            }`}
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-base flex-shrink-0">📱</span>
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm font-bold leading-tight truncate">
+                  Zalo Mini App
+                </div>
+                <div
+                  className={`text-[11px] mt-0.5 truncate transition-colors duration-300 ${
+                    activeType === 'miniapp' ? 'text-blue-300' : 'text-slate-400'
+                  }`}
+                >
+                  Đặt lịch, tích điểm & bán hàng
+                </div>
+              </div>
+            </div>
+            <span
+              className={`ml-2 px-2 py-0.5 rounded-full text-xs font-extrabold flex-shrink-0 transition-colors duration-300 ${
+                activeType === 'miniapp'
+                  ? 'bg-blue-400 text-slate-950'
+                  : 'bg-blue-100 text-blue-800'
+              }`}
+            >
+              {counts.miniapp}
+            </span>
+          </button>
+
+          {/* Tab 4: Dự Án Đã Làm Cho Khách */}
           <button
             ref={(el) => {
               if (el) mainTabRefs.current.set('client', el);
             }}
             type="button"
             onClick={() => setActiveType('client')}
-            className={`relative z-10 flex items-center justify-between px-4 py-3.5 rounded-xl text-left transition-colors duration-300 ${
+            className={`relative z-10 flex items-center justify-between px-3.5 py-3.5 rounded-xl text-left transition-colors duration-300 ${
               activeType === 'client' ? 'text-white' : 'text-slate-700 hover:text-[#0D1B2A]'
             }`}
           >
-            <div className="flex items-center gap-3">
-              <span className="text-lg">🏆</span>
-              <div>
-                <div className="text-xs sm:text-sm font-bold leading-tight">
-                  Dự Án Đã Làm Cho Khách
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-base flex-shrink-0">🏆</span>
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm font-bold leading-tight truncate">
+                  Dự Án Đã Làm
                 </div>
                 <div
-                  className={`text-[11px] mt-0.5 transition-colors duration-300 ${
+                  className={`text-[11px] mt-0.5 truncate transition-colors duration-300 ${
                     activeType === 'client' ? 'text-emerald-300' : 'text-slate-400'
                   }`}
                 >
@@ -360,7 +427,7 @@ export default function ThemeGalleryClient({ themes }: Props) {
               </div>
             </div>
             <span
-              className={`px-2.5 py-1 rounded-full text-xs font-extrabold transition-colors duration-300 ${
+              className={`ml-2 px-2 py-0.5 rounded-full text-xs font-extrabold flex-shrink-0 transition-colors duration-300 ${
                 activeType === 'client'
                   ? 'bg-emerald-400 text-slate-950'
                   : 'bg-emerald-100 text-emerald-800'
@@ -421,7 +488,7 @@ export default function ThemeGalleryClient({ themes }: Props) {
         <div className="w-full md:w-64 flex-shrink-0">
           <input
             type="text"
-            placeholder="Tìm kiếm giao diện, dự án..."
+            placeholder="Tìm kiếm giao diện, mini app..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-[#0D1B2A] placeholder-slate-400 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all duration-200"
@@ -437,7 +504,9 @@ export default function ThemeGalleryClient({ themes }: Props) {
             className="text-center py-16 saas-card p-8 gallery-card-enter"
           >
             <p className="text-slate-500 text-sm">
-              {activeType === 'client' && counts.client === 0
+              {activeType === 'miniapp' && counts.miniapp === 0
+                ? 'Hiện chưa có mẫu Zalo Mini App nào được thêm vào mục này.'
+                : activeType === 'client' && counts.client === 0
                 ? 'Hiện chưa có dự án khách hàng nào được đánh dấu trong mục này.'
                 : 'Không tìm thấy giao diện hoặc dự án phù hợp với bộ lọc hiện tại.'}
             </p>
@@ -457,6 +526,7 @@ export default function ThemeGalleryClient({ themes }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredThemes.map((theme, idx) => {
               const isClient = theme.type === 'client';
+              const isMiniApp = theme.type === 'miniapp';
               return (
                 <div
                   key={`${activeType}-${activeCategory}-${theme.id}`}
@@ -466,7 +536,11 @@ export default function ThemeGalleryClient({ themes }: Props) {
                     setCurrentImageIndex(0);
                   }}
                   className={`spotlight-card saas-card gallery-card-enter group cursor-pointer overflow-hidden ${
-                    isClient ? 'ring-1 ring-emerald-500/20 hover:ring-emerald-500/50' : ''
+                    isClient
+                      ? 'ring-1 ring-emerald-500/20 hover:ring-emerald-500/50'
+                      : isMiniApp
+                      ? 'ring-1 ring-blue-500/20 hover:ring-blue-500/50'
+                      : ''
                   }`}
                 >
                   {/* Image area */}
@@ -481,15 +555,23 @@ export default function ThemeGalleryClient({ themes }: Props) {
                     {/* Subtle overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] flex items-end p-4">
                       <span className="text-xs font-semibold text-white bg-black/65 backdrop-blur-md px-3 py-1.5 rounded-lg">
-                        {isClient ? 'Xem chi tiết dự án thực tế' : 'Nhấp để xem chi tiết & demo'}
+                        {isClient
+                          ? 'Xem chi tiết dự án thực tế'
+                          : isMiniApp
+                          ? 'Xem chi tiết & trải nghiệm Mini App'
+                          : 'Nhấp để xem chi tiết & demo'}
                       </span>
                     </div>
 
-                    {/* Top-left Type Badge: Dự Án Khách Hàng vs Theme Mẫu */}
+                    {/* Top-left Type Badge */}
                     <div className="absolute top-3 left-3 z-10">
                       {isClient ? (
                         <span className="px-2.5 py-1 bg-emerald-950/90 text-emerald-300 border border-emerald-400/40 backdrop-blur-md rounded-md text-[10px] font-bold shadow-sm inline-flex items-center gap-1">
                           <span>🏆</span> Dự Án Khách Hàng
+                        </span>
+                      ) : isMiniApp ? (
+                        <span className="px-2.5 py-1 bg-blue-950/90 text-blue-300 border border-blue-400/40 backdrop-blur-md rounded-md text-[10px] font-bold shadow-sm inline-flex items-center gap-1">
+                          <span>📱</span> Zalo Mini App
                         </span>
                       ) : (
                         <span className="px-2.5 py-1 bg-slate-900/80 text-amber-300 border border-amber-400/30 backdrop-blur-md rounded-md text-[10px] font-bold shadow-sm inline-flex items-center gap-1">
@@ -551,10 +633,16 @@ export default function ThemeGalleryClient({ themes }: Props) {
                         className={`inline-flex items-center gap-1.5 text-xs font-semibold transition-colors duration-200 group/link ${
                           isClient
                             ? 'text-emerald-700 hover:text-emerald-800'
+                            : isMiniApp
+                            ? 'text-blue-700 hover:text-blue-800'
                             : 'text-amber-700 hover:text-amber-800'
                         }`}
                       >
-                        {isClient ? 'Xem Dự Án Thực Tế' : 'Xem Chi Tiết & Demo'}
+                        {isClient
+                          ? 'Xem Dự Án Thực Tế'
+                          : isMiniApp
+                          ? 'Xem Chi Tiết Mini App'
+                          : 'Xem Chi Tiết & Demo'}
                         <span className="transition-transform duration-200 group-hover/link:translate-x-0.5">
                           →
                         </span>
@@ -562,6 +650,10 @@ export default function ThemeGalleryClient({ themes }: Props) {
                       {isClient ? (
                         <span className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
                           <span>✓</span> Đã Bàn Giao
+                        </span>
+                      ) : isMiniApp ? (
+                        <span className="text-[11px] font-semibold text-blue-600 flex items-center gap-1">
+                          <span>⚡</span> Mở Trên Zalo
                         </span>
                       ) : (
                         <span className="text-[11px] font-medium text-slate-400">
@@ -641,11 +733,15 @@ export default function ThemeGalleryClient({ themes }: Props) {
                 </div>
               )}
 
-              {/* Top-left Type & Ratio indicator */}
+              {/* Top-left Type indicator */}
               <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
                 {selectedTheme.type === 'client' ? (
                   <span className="px-3 py-1 bg-emerald-950/90 text-emerald-300 border border-emerald-400/40 backdrop-blur-md rounded-lg text-[11px] font-bold shadow-sm inline-flex items-center gap-1.5">
                     <span>🏆</span> Dự Án Đã Làm Cho Khách
+                  </span>
+                ) : selectedTheme.type === 'miniapp' ? (
+                  <span className="px-3 py-1 bg-blue-950/90 text-blue-300 border border-blue-400/40 backdrop-blur-md rounded-lg text-[11px] font-bold shadow-sm inline-flex items-center gap-1.5">
+                    <span>📱</span> Zalo Mini App
                   </span>
                 ) : (
                   <span className="px-3 py-1 bg-slate-900/85 text-amber-300 border border-amber-400/30 backdrop-blur-md rounded-lg text-[11px] font-bold shadow-sm inline-flex items-center gap-1.5">
@@ -712,20 +808,28 @@ export default function ThemeGalleryClient({ themes }: Props) {
                     Phân Loại
                   </div>
                   <div className="text-xs font-bold text-[#0D1B2A] mt-0.5">
-                    {selectedTheme.type === 'client' ? 'Dự Án Thực Tế' : 'Theme Mẫu Có Sẵn'}
+                    {selectedTheme.type === 'client'
+                      ? 'Dự Án Thực Tế'
+                      : selectedTheme.type === 'miniapp'
+                      ? 'Zalo Mini App'
+                      : 'Theme Mẫu Có Sẵn'}
                   </div>
                 </div>
                 <div>
                   <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                    Độ Tương Thích
+                    Nền Tảng
                   </div>
-                  <div className="text-xs font-bold text-[#0D1B2A] mt-0.5">100% Responsive</div>
+                  <div className="text-xs font-bold text-[#0D1B2A] mt-0.5">
+                    {selectedTheme.type === 'miniapp' ? 'Zalo App & Mobile' : '100% Responsive'}
+                  </div>
                 </div>
                 <div>
                   <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                    Tối Ưu SEO
+                    Hiệu Năng
                   </div>
-                  <div className="text-xs font-bold text-emerald-600 mt-0.5">Chuẩn Cấu Trúc</div>
+                  <div className="text-xs font-bold text-emerald-600 mt-0.5">
+                    {selectedTheme.type === 'miniapp' ? 'Tích Hợp ZNS / OA' : 'Chuẩn Cấu Trúc SEO'}
+                  </div>
                 </div>
               </div>
 
@@ -755,12 +859,16 @@ export default function ThemeGalleryClient({ themes }: Props) {
                       className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 text-center ${
                         selectedTheme.type === 'client'
                           ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white'
+                          : selectedTheme.type === 'miniapp'
+                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white'
                           : 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950'
                       }`}
                     >
                       <span>
                         {selectedTheme.type === 'client'
                           ? 'Xem Website Thực Tế'
+                          : selectedTheme.type === 'miniapp'
+                          ? 'Trải Nghiệm Mini App'
                           : 'Xem Demo Trực Tiếp'}
                       </span>
                       <span>↗</span>
@@ -782,6 +890,8 @@ export default function ThemeGalleryClient({ themes }: Props) {
                 >
                   {selectedTheme.type === 'client'
                     ? 'Làm Website Tương Tự →'
+                    : selectedTheme.type === 'miniapp'
+                    ? 'Tư Vấn Làm Mini App Này →'
                     : 'Yêu Cầu Tùy Biến Theme Này →'}
                 </a>
               </div>

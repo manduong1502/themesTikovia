@@ -29,3 +29,4 @@ export async function isAdminAuthenticated(): Promise<boolean> {
     return false;
   }
 }
+
