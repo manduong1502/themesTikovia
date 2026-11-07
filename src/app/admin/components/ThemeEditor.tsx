@@ -1,6 +1,17 @@
 'use client';
 
 import React, { useState, useRef, useMemo } from 'react';
+import {
+  LayoutTemplate,
+  Smartphone,
+  Award,
+  Images,
+  Trash2,
+  Plus,
+  Building2,
+  Layers,
+  Upload,
+} from 'lucide-react';
 import { ThemeItem, ThemeType } from '@/lib/content';
 
 interface ThemeEditorProps {
@@ -225,8 +236,8 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
       {/* Top action bar */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 font-bold text-lg">
-            🎨
+          <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
+            <LayoutTemplate className="w-5 h-5" />
           </div>
           <div>
             <h2 className="text-base font-bold text-[#0D1B2A]">
@@ -255,23 +266,23 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
           <button
             type="button"
             onClick={() => handleAddNewTheme('template')}
-            className="px-3 py-2 bg-[#0D1B2A] hover:bg-[#1b2a3a] text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1"
+            className="px-3 py-2 bg-[#0D1B2A] hover:bg-[#1b2a3a] text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
           >
-            <span>🎨</span> + Theme Mẫu
+            <Plus className="w-3.5 h-3.5" /> Theme Mẫu
           </button>
           <button
             type="button"
             onClick={() => handleAddNewTheme('miniapp')}
-            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1"
+            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
           >
-            <span>📱</span> + Mini App
+            <Plus className="w-3.5 h-3.5" /> Mini App
           </button>
           <button
             type="button"
             onClick={() => handleAddNewTheme('client')}
-            className="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1"
+            className="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 flex items-center gap-1.5"
           >
-            <span>🏆</span> + Dự Án Khách
+            <Plus className="w-3.5 h-3.5" /> Dự Án Khách
           </button>
         </div>
       </div>
@@ -301,7 +312,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              🎨 Theme ({counts.template})
+              Theme ({counts.template})
             </button>
             <button
               type="button"
@@ -312,7 +323,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📱 Mini App ({counts.miniapp})
+              Mini App ({counts.miniapp})
             </button>
             <button
               type="button"
@@ -323,7 +334,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              🏆 Dự Án ({counts.client})
+              Dự Án ({counts.client})
             </button>
           </div>
 
@@ -383,16 +394,16 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1 mb-1">
                         {isClient ? (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
-                            🏆 Dự Án Khách
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Dự Án Khách
                           </span>
                         ) : isMiniApp ? (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
-                            📱 Zalo Mini App
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> Zalo Mini App
                           </span>
                         ) : (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
-                            🎨 Theme Mẫu
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Theme Mẫu
                           </span>
                         )}
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
@@ -448,9 +459,9 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                 <button
                   type="button"
                   onClick={() => handleDeleteTheme(selectedTheme.id)}
-                  className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 font-semibold text-xs rounded-xl border border-red-200 transition-colors"
+                  className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 font-semibold text-xs rounded-xl border border-red-200 transition-colors inline-flex items-center gap-1.5"
                 >
-                  🗑 Xóa Card Này
+                  <Trash2 className="w-3.5 h-3.5" /> Xóa Card Này
                 </button>
               </div>
 
@@ -458,7 +469,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
-                    <span>📌</span> Phân Loại Hiển Thị Trên Website
+                    <Layers className="w-3.5 h-3.5 text-amber-700" /> Phân Loại Hiển Thị Trên Website
                   </label>
                   <span className="text-[11px] text-slate-400">
                     Khách hàng có thể lọc theo phân loại này
@@ -478,7 +489,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                   >
                     <div className="flex items-center justify-between w-full">
                       <span className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
-                        <span>🎨</span> Theme Mẫu
+                        <LayoutTemplate className="w-3.5 h-3.5 text-amber-600" /> Theme Mẫu
                       </span>
                       {currentType === 'template' && (
                         <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[9px] font-bold">
@@ -503,7 +514,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                   >
                     <div className="flex items-center justify-between w-full">
                       <span className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
-                        <span>📱</span> Zalo Mini App
+                        <Smartphone className="w-3.5 h-3.5 text-blue-600" /> Zalo Mini App
                       </span>
                       {currentType === 'miniapp' && (
                         <span className="px-1.5 py-0.5 rounded-full bg-blue-600 text-white text-[9px] font-bold">
@@ -528,7 +539,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                   >
                     <div className="flex items-center justify-between w-full">
                       <span className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
-                        <span>🏆</span> Dự Án Đã Làm
+                        <Award className="w-3.5 h-3.5 text-emerald-600" /> Dự Án Đã Làm
                       </span>
                       {currentType === 'client' && (
                         <span className="px-1.5 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-bold">
@@ -537,7 +548,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                       )}
                     </div>
                     <p className="text-[11px] text-slate-500 leading-relaxed">
-                      Hiển thị trong <strong>Dự Án Khách Hàng</strong> kèm nhãn <em>✓ Đã Bàn Giao</em>.
+                      Hiển thị trong <strong>Dự Án Khách Hàng</strong> kèm nhãn <em>Đã Bàn Giao</em>.
                     </p>
                   </button>
                 </div>
@@ -545,8 +556,8 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                 {/* Optional Client Name when type === 'client' */}
                 {currentType === 'client' && (
                   <div className="pt-2 animate-in fade-in duration-150">
-                    <label className="block text-xs font-semibold text-emerald-900 mb-1">
-                      🤝 Tên Khách Hàng / Thương Hiệu Đối Tác (Tùy chọn)
+                    <label className="flex items-center gap-1.5 text-xs font-semibold text-emerald-900 mb-1">
+                      <Building2 className="w-3.5 h-3.5 text-emerald-700" /> Tên Khách Hàng / Thương Hiệu Đối Tác (Tùy chọn)
                     </label>
                     <input
                       type="text"
@@ -564,7 +575,7 @@ export default function ThemeEditor({ themes, onChange }: ThemeEditorProps) {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
                   <div>
                     <h4 className="text-xs font-bold text-[#0D1B2A] flex items-center gap-1.5">
-                      <span>🖼</span> Album Hình Ảnh (Chuẩn Tỉ Lệ 4:3)
+                      <Images className="w-3.5 h-3.5 text-amber-700" /> Album Hình Ảnh (Chuẩn Tỉ Lệ 4:3)
                     </h4>
                     <p className="text-[11px] text-slate-400 mt-0.5">
                       Đang có {currentImages.length} ảnh. Người dùng khi xem chi tiết sẽ có nút chuyển qua lại giữa các hình này.

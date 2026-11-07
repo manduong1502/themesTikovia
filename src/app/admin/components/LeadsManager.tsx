@@ -1,6 +1,16 @@
 'use client';
 
 import React from 'react';
+import {
+  Inbox,
+  RefreshCw,
+  Phone,
+  MessageCircle,
+  Mail,
+  LayoutTemplate,
+  Check,
+  Trash2,
+} from 'lucide-react';
 import { LeadItem } from '@/lib/leads';
 
 interface LeadsManagerProps {
@@ -46,8 +56,8 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
       {/* Header Box */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold text-lg">
-            📥
+          <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+            <Inbox className="w-5 h-5" />
           </div>
           <div>
             <h2 className="text-base font-bold text-[#0D1B2A]">
@@ -63,16 +73,18 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
         <button
           type="button"
           onClick={onRefresh}
-          className="px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors self-start sm:self-auto"
+          className="px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors self-start sm:self-auto inline-flex items-center gap-1.5"
         >
-          ↻ Làm mới danh sách
+          <RefreshCw className="w-3.5 h-3.5" /> Làm mới danh sách
         </button>
       </div>
 
       {/* Leads List */}
       {leads.length === 0 ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-2">
-          <div className="text-3xl">📭</div>
+          <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-2">
+            <Inbox className="w-5 h-5" />
+          </div>
           <h3 className="text-sm font-bold text-[#0D1B2A]">Chưa có khách hàng nào gửi yêu cầu</h3>
           <p className="text-xs text-slate-400 max-w-md mx-auto">
             Khi khách hàng điền Form Liên Hệ hoặc bấm &ldquo;Yêu Cầu Tùy Biến Theme&rdquo; ngoài trang chủ, thông tin SĐT/Zalo và nhu cầu sẽ hiển thị ngay tại đây.
@@ -104,12 +116,12 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
                   <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       {isNew ? (
-                        <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-extrabold uppercase tracking-wide">
-                          ● Mới nhận
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-extrabold uppercase tracking-wide inline-flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-950" /> Mới nhận
                         </span>
                       ) : (
-                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                          ✓ Đã liên hệ tư vấn
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold inline-flex items-center gap-1">
+                          <Check className="w-3 h-3" /> Đã liên hệ tư vấn
                         </span>
                       )}
 
@@ -124,7 +136,7 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
                         href={`tel:${cleanPhone}`}
                         className="inline-flex items-center gap-1.5 font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-lg transition-colors"
                       >
-                        <span>📞</span> {lead.phone}
+                        <Phone className="w-3.5 h-3.5" /> {lead.phone}
                       </a>
 
                       <a
@@ -133,15 +145,15 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1 rounded-lg transition-colors"
                       >
-                        <span>💬</span> Nhắn Zalo
+                        <MessageCircle className="w-3.5 h-3.5" /> Nhắn Zalo
                       </a>
 
                       {lead.email && (
                         <a
                           href={`mailto:${lead.email}`}
-                          className="text-slate-600 hover:text-[#0D1B2A] underline"
+                          className="text-slate-600 hover:text-[#0D1B2A] underline inline-flex items-center gap-1"
                         >
-                          ✉ {lead.email}
+                          <Mail className="w-3.5 h-3.5" /> {lead.email}
                         </a>
                       )}
                     </div>
@@ -149,7 +161,7 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
                     {/* Interested Theme */}
                     {lead.themeInterest && (
                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900">
-                        <span>🎨</span> Quan tâm mẫu/dự án: <strong>{lead.themeInterest}</strong>
+                        <LayoutTemplate className="w-3.5 h-3.5 text-amber-700" /> Quan tâm mẫu/dự án: <strong>{lead.themeInterest}</strong>
                       </div>
                     )}
 
@@ -164,21 +176,27 @@ export default function LeadsManager({ leads, onRefresh }: LeadsManagerProps) {
                     <button
                       type="button"
                       onClick={() => handleToggleStatus(lead)}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all inline-flex items-center gap-1.5 ${
                         isNew
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-sm'
                           : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'
                       }`}
                     >
-                      {isNew ? '✓ Đánh dấu Đã Tư Vấn' : 'Đặt lại Chưa Xử Lý'}
+                      {isNew ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" /> Đánh dấu Đã Tư Vấn
+                        </>
+                      ) : (
+                        'Đặt lại Chưa Xử Lý'
+                      )}
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleDelete(lead.id)}
-                      className="px-3 py-1.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors"
+                      className="px-3 py-1.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors inline-flex items-center gap-1"
                     >
-                      🗑 Xóa
+                      <Trash2 className="w-3.5 h-3.5" /> Xóa
                     </button>
                   </div>
                 </div>

@@ -9,10 +9,10 @@ interface Props {
 }
 
 const defaultStats = [
-  { value: 24, suffix: '+', label: 'Themes Đã Thiết Kế', description: 'Trải rộng 8 danh mục ngành' },
-  { value: 100, suffix: '%', label: 'Responsive', description: 'Mọi theme hoạt động trên tất cả thiết bị' },
-  { value: 3, suffix: 'năm', label: 'Kinh Nghiệm', description: 'Xây dựng giao diện web chuẩn sản xuất' },
-  { value: 18, suffix: '+', label: 'Demo Trực Tiếp', description: 'Có thể triển khai và khám phá ngay bây giờ' },
+  { value: 24, suffix: '+', label: 'Giao Diện & Mini App', description: 'Đa dạng ngành nghề từ Spa, BĐS đến E-Commerce' },
+  { value: 100, suffix: '%', label: 'Tối Ưu Di Động & SEO', description: 'Tốc độ tải trang vượt trội trên mọi thiết bị' },
+  { value: 5, suffix: 'năm', label: 'Kinh Nghiệm Thực Chiến', description: 'Tư vấn, thiết kế và vận hành hệ thống số' },
+  { value: 30, suffix: '+', label: 'Dự Án Đã Bàn Giao', description: 'Đồng hành cùng doanh nghiệp tăng trưởng bền vững' },
 ];
 
 function AnimatedStat({ value, suffix, label, description, delay }: {
@@ -51,40 +51,33 @@ function AnimatedStat({ value, suffix, label, description, delay }: {
   }, [value, delay, triggered]);
 
   return (
-    <div ref={ref} className="saas-card p-8 reveal flex flex-col gap-2">
-      <div className="font-display leading-none tracking-tight text-[#0D1B2A]" style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)' }}>
-        <span className="gradient-text">{count}</span>
-        <span className="text-amber-400 text-2xl">{suffix}</span>
+    <div ref={ref} className="saas-card p-7 reveal flex flex-col gap-1.5">
+      <div className="font-display leading-none tracking-tight text-[#0D1B2A] tabular-nums" style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.2rem)' }}>
+        <span>{count}</span>
+        <span className="text-amber-600 text-2xl ml-0.5">{suffix}</span>
       </div>
-      <div className="text-sm font-bold text-[#0D1B2A] mt-1">{label}</div>
-      <div className="text-xs text-slate-400 leading-relaxed">{description}</div>
+      <div className="text-sm font-bold text-[#0D1B2A] mt-2">{label}</div>
+      <div className="text-xs text-slate-500 leading-relaxed">{description}</div>
     </div>
   );
 }
 
 export default function StatsSection({ stats }: Props) {
-  const badge = stats?.badge || 'Con Số';
   const statsList = stats?.stats && stats.stats.length > 0 ? stats.stats : defaultStats;
 
   return (
-    <section className="py-24 border-t border-slate-100" id="stats">
+    <section className="py-20 border-t border-slate-200/80" id="stats">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Section label */}
-        <div className="flex items-center gap-4 mb-16 reveal">
-          <span className="badge-pill bg-amber-50 text-amber-700 border border-amber-200">{badge}</span>
-          <div className="h-px flex-1 bg-slate-100" />
-        </div>
-
         {/* Headline */}
-        <div className="mb-14 max-w-3xl reveal">
-          <h2 className="font-display font-light tracking-tight leading-[1.08] text-[#0D1B2A]" style={{ fontSize: 'clamp(1.8rem, 5vw, 3.5rem)' }}>
-            Mỗi theme được xây dựng có chủ đích —{' '}
-            <span className="gradient-text italic">không lối tắt, không thỏa hiệp.</span>
+        <div className="mb-12 max-w-3xl reveal">
+          <h2 className="font-display font-light tracking-tight leading-[1.12] text-[#0D1B2A]" style={{ fontSize: 'clamp(1.75rem, 4vw, 2.85rem)' }}>
+            Mỗi giải pháp được kiến tạo có chủ đích —{' '}
+            <span className="italic text-amber-700">chuẩn mực thẩm mỹ & tối ưu chuyển đổi.</span>
           </h2>
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {statsList.map((stat, i) => (
             <AnimatedStat key={stat.label} {...stat} delay={i * 150} />
           ))}
@@ -93,16 +86,16 @@ export default function StatsSection({ stats }: Props) {
         {/* Process strip */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 reveal reveal-delay-2">
           {[
-            { step: '01', title: 'Bối Cảnh Trước Tiên', body: 'Nghiên cứu ngành, người dùng và bối cảnh cạnh tranh trước khi đưa ra bất kỳ quyết định thiết kế nào.' },
-            { step: '02', title: 'Tư Duy Hệ Thống', body: 'Xây dựng hệ thống thiết kế — token, component, pattern — trước khi thiết kế từng trang riêng lẻ.' },
-            { step: '03', title: 'Triển Khai & Cải Tiến', body: 'Triển khai demo trực tiếp. Tinh chỉnh dựa trên hành vi viewport thực tế, không chỉ xem trước trên Figma.' },
+            { step: '01', title: 'Phân Tích Mô Hình Kinh Doanh', body: 'Nghiên cứu đặc thù ngành hàng, hành vi khách hàng mục tiêu và lợi thế cạnh tranh trước khi phác thảo giao diện.' },
+            { step: '02', title: 'Thiết Kế Hệ Thống Đồng Bộ', body: 'Xây dựng Design System riêng biệt cho thương hiệu — từ màu sắc, typography đến cấu trúc luồng đặt hàng/đặt lịch.' },
+            { step: '03', title: 'Triển Khai & Tối Ưu Thực Tế', body: 'Kiểm thử hiệu năng thực tế trên mọi thiết bị di động, tích hợp Zalo Mini App/ZNS và bàn giao quản trị dễ dàng.' },
           ].map(({ step, title, body }) => (
-            <div key={step} className="saas-card p-8 group">
-              <div className="font-display text-4xl font-light text-slate-100 mb-4 group-hover:text-amber-100 transition-colors">
-                {step}
+            <div key={step} className="saas-card p-7 group">
+              <div className="font-mono text-xs font-bold text-amber-700 mb-3 tracking-widest">
+                BƯỚC {step}
               </div>
-              <h3 className="text-sm font-bold text-[#0D1B2A] uppercase tracking-wider mb-3">{title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">{body}</p>
+              <h3 className="text-base font-bold text-[#0D1B2A] mb-2">{title}</h3>
+              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">{body}</p>
             </div>
           ))}
         </div>

@@ -7,48 +7,53 @@ interface Props {
 }
 
 const defaultSkills = [
-  { name: 'Thiết Kế UI/UX', level: 95 },
-  { name: 'Bố Cục Responsive', level: 98 },
-  { name: 'Hệ Thống Typography', level: 90 },
-  { name: 'Chuyển Động & Hoạt Ảnh', level: 85 },
-  { name: 'Hệ Thống Thiết Kế', level: 88 },
-  { name: 'Lập Trình Frontend', level: 80 },
+  { name: 'Thiết Kế UI/UX & Nhận Diện', level: 98 },
+  { name: 'Bố Cục Đa Thiết Bị (Responsive)', level: 100 },
+  { name: 'Tối Ưu Cấu Trúc Chuẩn SEO', level: 96 },
+  { name: 'Tốc Độ Tải Trang & Core Web Vitals', level: 95 },
+  { name: 'Phát Triển Zalo Mini App & ZNS', level: 95 },
+  { name: 'Kiến Trúc Hệ Thống & Bảo Mật', level: 94 },
 ];
 
-const defaultTools = ['Figma', 'Next.js', 'Tailwind CSS', 'Framer Motion', 'GSAP', 'Webflow', 'Adobe CC'];
+const defaultTools = ['Next.js', 'React', 'Tailwind CSS', 'Zalo Mini App', 'TypeScript', 'Figma', 'Docker'];
 
 export default function AboutSection({ about }: Props) {
-  const badge = about?.badge || 'Giới Thiệu';
-  const title = about?.title || 'Tạo ra những trải nghiệm kỹ thuật số khiến người dùng';
-  const highlightText = about?.highlightText || 'nhìn lại lần thứ hai.';
-  const paragraphs = about?.paragraphs || [
-    'Tôi thiết kế các giao diện web cân bằng giữa tác động thị giác và sự rõ ràng về chức năng. Mỗi theme trong portfolio này bắt đầu từ một brief thực tế — một ngành cụ thể, một vấn đề người dùng cụ thể — và được xây dựng theo tiêu chuẩn sản xuất.',
-    'Cách tiếp cận của tôi: hiểu bối cảnh trước khi chạm vào canvas. Kết quả là những theme cảm thấy gắn liền với ngành của chúng thay vì là các template chung chung với lớp sơn mới.',
-  ];
+  const title = about?.title || 'Tạo ra những trải nghiệm kỹ thuật số khiến khách hàng';
+  const highlightText = about?.highlightText || 'tin tưởng ngay từ cái nhìn đầu tiên.';
+  const rawParagraphs = about?.paragraphs || [];
+  const paragraphs =
+    rawParagraphs.length > 0 && !rawParagraphs[0]?.startsWith('Tôi thiết kế')
+      ? rawParagraphs
+      : [
+          'Tikovia xây dựng các giao diện website và Zalo Mini App cân bằng giữa thẩm mỹ thương hiệu và hiệu quả chuyển đổi thực tế. Mỗi sản phẩm đều xuất phát từ bài toán kinh doanh cụ thể của từng ngành hàng.',
+          'Quy trình của chúng tôi tập trung vào tốc độ tải trang, cấu trúc chuẩn SEO và trải nghiệm mượt mà trên điện thoại — giúp doanh nghiệp sở hữu nền tảng số chuyên nghiệp, dễ dàng quản trị và mở rộng.',
+        ];
   const skills = about?.skills && about.skills.length > 0 ? about.skills : defaultSkills;
   const tools = about?.tools && about.tools.length > 0 ? about.tools : defaultTools;
-  const studioImage = about?.studioImage || 'https://img.rocket.new/generatedImages/rocket_gen_img_137ddd9e4-1772074857584.png';
-  const studioBadge = about?.studioBadge || 'Studio Thiết Kế';
+  const studioImage =
+    about?.studioImage ||
+    'https://img.rocket.new/generatedImages/rocket_gen_img_137ddd9e4-1772074857584.png';
+  const studioBadge = about?.studioBadge || 'Tikovia Digital Studio';
 
   return (
     <section id="about" className="py-24 border-t border-slate-100 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Section header */}
-        <div className="flex items-center gap-4 mb-16 reveal">
-          <span className="badge-pill bg-amber-50 text-amber-700 border border-amber-200">{badge}</span>
-          <div className="h-px flex-1 bg-slate-100" />
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-0">
           {/* Left — bio */}
           <div className="lg:col-span-5 lg:pr-16 flex flex-col justify-between">
             <div>
               <h2 className="font-display text-4xl md:text-5xl font-light text-[#0D1B2A] tracking-tight leading-[1.08] mb-6 reveal reveal-delay-1">
                 {title}{' '}
-                <em className="gradient-text not-italic">{highlightText}</em>
+                <em className="text-amber-600 font-normal">{highlightText}</em>
               </h2>
               {paragraphs.map((p, idx) => (
-                <p key={idx} className={`text-slate-500 text-base leading-relaxed mb-5 reveal reveal-delay-${Math.min(idx + 2, 5)}`}>
+                <p
+                  key={idx}
+                  className={`text-slate-500 text-base leading-relaxed mb-5 reveal reveal-delay-${Math.min(
+                    idx + 2,
+                    5
+                  )}`}
+                >
                   {p}
                 </p>
               ))}
@@ -56,7 +61,9 @@ export default function AboutSection({ about }: Props) {
 
             {/* Tools */}
             <div className="mt-10 reveal reveal-delay-4">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block mb-4">Công Cụ & Stack</span>
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block mb-4">
+                Nền Tảng & Công Nghệ
+              </span>
               <div className="flex flex-wrap gap-2">
                 {tools.map((tool) => (
                   <span
@@ -82,9 +89,9 @@ export default function AboutSection({ about }: Props) {
                   sizes="(max-width: 1024px) 100vw, 60vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-white/15 to-transparent" />
                 <div className="absolute bottom-4 left-4">
-                  <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-[10px] font-semibold tracking-widest uppercase text-amber-700 shadow-sm">
+                  <span className="px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-lg text-[10px] font-semibold tracking-widest uppercase text-[#0D1B2A] shadow-sm">
                     {studioBadge}
                   </span>
                 </div>
@@ -93,20 +100,22 @@ export default function AboutSection({ about }: Props) {
 
             {/* Skill bars */}
             <div className="space-y-4 reveal reveal-delay-2">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block mb-5">Năng Lực Cốt Lõi</span>
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block mb-5">
+                Tiêu Chuẩn Triển Khai
+              </span>
               {skills.map((skill, i) => (
                 <div key={skill.name} className="group">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs font-semibold text-slate-700 tracking-wide">
                       {skill.name}
                     </span>
-                    <span className="text-xs font-bold text-amber-600">
+                    <span className="text-xs font-bold text-[#0D1B2A] tabular-nums">
                       {skill.level}%
                     </span>
                   </div>
-                  <div className="h-1.5 bg-slate-100 rounded-full relative overflow-hidden">
+                  <div className="h-1.5 bg-slate-200/70 rounded-full relative overflow-hidden">
                     <div
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full transition-all duration-700"
+                      className="absolute top-0 left-0 h-full bg-[#0D1B2A] rounded-full transition-all duration-700"
                       style={{ width: `${skill.level}%`, transitionDelay: `${i * 80}ms` }}
                     />
                   </div>
