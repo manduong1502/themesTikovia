@@ -55,11 +55,9 @@ chmod -R 777 public/uploads src/data
 # 5. Build và khởi động lại container bằng Docker Compose
 echo "🐳 Đang build và chạy Docker container..."
 if docker compose version >/dev/null 2>&1; then
-  docker compose down || true
-  docker compose up -d --build
+  docker compose up -d --build --remove-orphans
 elif which docker-compose >/dev/null 2>&1; then
-  docker-compose down || true
-  docker-compose up -d --build
+  docker-compose up -d --build --remove-orphans
 else
   echo "❌ Lỗi: Máy chủ chưa cài Docker Compose!"
   exit 1

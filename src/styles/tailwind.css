@@ -20,8 +20,10 @@
   --input: #F8F9FB;
   --ring: #D4A017;
   --radius: 0.75rem;
-  --font-sans: var(--font-manrope), sans-serif;
-  --font-display: var(--font-fraunces), serif;
+  --font-manrope: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-fraunces: 'Fraunces', Georgia, Cambria, 'Times New Roman', serif;
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-fraunces);
 }
 
 @layer base {
